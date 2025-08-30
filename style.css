@@ -1,0 +1,11 @@
+body {
+    background-color: #0a0a0a; /* A dark grey, almost black */
+    color: #00ff00; /* Bright green text, very "tech" */
+    font-family: monospace; /* Gives it a coding terminal vibe */
+    text-align: center; /* Centers all the text */
+    padding: 50px; /* Adds some space around the edges */
+}
+
+h1 {
+    font-size: 3em; /* Makes the heading very large */
+}
