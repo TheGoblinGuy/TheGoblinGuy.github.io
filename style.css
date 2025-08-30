@@ -9,3 +9,31 @@ body {
 h1 {
     font-size: 3em; /* Makes the heading very large */
 }
+
+/* Style the navigation bar */
+nav {
+    background-color: #333; /* Dark background */
+    padding: 1em 0; /* Add some space inside */
+}
+
+nav ul {
+    list-style-type: none; /* Remove bullet points */
+    margin: 0;
+    padding: 0;
+    text-align: center; /* Center the menu items */
+}
+
+nav li {
+    display: inline; /* Make list items sit side-by-side */
+    margin: 0 15px; /* Add space between menu items */
+}
+
+nav a {
+    color: white; /* White text */
+    text-decoration: none; /* Remove underline from links */
+    font-size: 1.2em;
+}
+
+nav a:hover {
+    color: #00ff00; /* Green text on hover */
+}
