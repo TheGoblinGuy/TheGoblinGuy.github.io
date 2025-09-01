@@ -16,10 +16,54 @@
         </ul>
     </nav>
 
-    <!-- Unique content for the About page -->
-    <h1>About Me</h1>
-    <p>I'm an ESL educator and creative technologist with over a decade of experience bridging cultures and building engaging learning experiences... [ADD BIO TBD]...</p>
-    <p>When I'm not teaching or coding, you can find me exploring Sichuan on my motorcycle or sketching from life.</p>
+<!-- Main About Content -->
+    <main class="about-page">
+        <section class="about-hero">
+            <h1>Building Digital Worlds & Goblin-Powered Games</h1>
+            <p class="lead">Forget the ordinary. Let's build something weird and wonderful together.</p>
+        </section>
+
+        <section class="about-content">
+            <div class="about-text">
+                <p>Welcome to Fart Goblin Tech! We're a one-goblin studio obsessed with the place where classic artistry meets modern code.</p>
+                
+                <p>We forge indie games in the fires of the Godot engine, craft 3D worlds from pure imagination, and believe that the best digital experiences should be both rock-solid and a little bit magical.</p>
+
+                <p>With over a decade of experience in education and technology, we bring a unique perspective to creative technology – making complex systems accessible and engaging.</p>
+            </div>
+
+            <div class="skills-section">
+                <h2>What We Work With</h2>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <h3>🎮 Game Development</h3>
+                        <p>Godot Engine, GDScript, Game Design</p>
+                    </div>
+                    <div class="skill-item">
+                        <h3>🔄 Creative Technology</h3>
+                        <p>Interactive Experiences, EdTech Solutions</p>
+                    </div>
+                    <div class="skill-item">
+                        <h3>🎨 3D & Visuals</h3>
+                        <p>3D Modeling, Animation, VFX</p>
+                    </div>
+                    <div class="skill-item">
+                        <h3>🌍 Web & Deployment</h3>
+                        <p>GitHub Pages, HTML/CSS, JavaScript</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; <span id="year"></span> F.A.R.T. Goblin Tech Ltd. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Simple JS for copyright year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
 
 </body>
 </html>
