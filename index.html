@@ -1,28 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Fart Goblin Tech</title>
-    <!-- Add this line to link the CSS file -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fart Goblin Tech - Game Development & Creative Technology</title>
+    <meta name="description" content="F.A.R.T. Goblin Tech Ltd. We create engaging indie games, 3D animation, and creative digital experiences.">
+    
+    <!-- Styles -->
     <link rel="stylesheet" type="text/css" href="style.css">
- <!-- Add this line for the favicon -->
+    
+    <!-- Favicons for all devices -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="icon" type="image/png" href="/favicon.png">
 </head>
 <body>
     
     <!-- Navigation Menu -->
-<nav>
-    <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="projects.html">Projects</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="contact.html">Contact</a></li>
-    </ul>
-</nav>
-    <!-- Flavour text -->
-    <h1>Hello World!</h1>
-    <p>Future home of F.A.R.T. Goblin Tech Ltd. Games and things are coming soon!</p>
-    <!-- Add further text below -->
-    <p>Connect with me on <a href="https://www.linkedin.com/in/joshuamcbride/">LinkedIn</a>.</p>
+    <nav>
+        <div class="nav-container">
+            <!-- Placeholder for a logo --> 
+            <a href="index.html" class="logo">Fart Goblin Tech</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Creative Technology & Game Development</h1>
+                <p class="lead">Welcome to F.A.R.T. Goblin Tech Ltd. We build engaging indie games, immersive 3D worlds, and digital experiences with a quirky twist.</p>
+                <div class="cta-buttons">
+                    <a href="projects.html" class="btn btn-primary">View Our Work</a>
+                    <a href="contact.html" class="btn btn-secondary">Get in Touch</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Flavour Text / Intro Section -->
+        <section class="intro">
+            <p><strong>Games and things are coming soon!</strong> In the meantime, connect with me on <a href="https://www.linkedin.com/in/joshuamcbride/">LinkedIn</a> to follow the journey.</p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; <span id="current-year"></span> F.A.R.T. Goblin Tech Ltd. All rights reserved.</p>
+    </footer>
+
+    <!-- Simple JS for dynamic copyright year -->
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
 </body>
 </html>
