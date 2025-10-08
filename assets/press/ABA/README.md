@@ -19,7 +19,7 @@ Loud and proud, or silent but deadly, what will you release onto the unsuspectin
 
 ## Trailer
 (youtube embedded video)
-<iframe width="1117" height="628" src="https://www.youtube.com/embed/LBaGnazH9jc" title="HE STOLE MY SANDWICH! :,(" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+![video](https://www.youtube.com/embed/LBaGnazH9jc)
 
 ## 🛠️ Built With
 - Godot Engine
