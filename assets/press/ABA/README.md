@@ -18,8 +18,7 @@ Loud and proud, or silent but deadly, what will you release onto the unsuspectin
 ![Gameplay screenshot](screenshots/gameplay1.jpg)
 
 ## Trailer
-(youtube embedded video)
-![video](https://www.youtube.com/embed/LBaGnazH9jc)
+[![Game Trailer](https://img.youtube.com/vi/LBaGnazH9jc/0.jpg)](https://www.youtube.com/watch?v=LBaGnazH9jc)
 
 ## 🛠️ Built With
 - Godot Engine
