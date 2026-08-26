@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Projects - Fart Goblin Tech</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">💨 Fart Goblin Tech</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects.html" class="active">Projects</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="page-container">
+
+        <h1>🚀 My Projects</h1>
+        <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto 40px auto; text-align: center;">
+            A selection of my work in game development, 3D animation, and creative technology.
+        </p>
+
+        <!-- Project 1: ABA -->
+        <div class="project-card">
+            <h2>💨 ABA - Air Biscuit Alchemist</h2>
+            <p>A quirky game built with Godot where you brew the most pungent of air biscuits. Loud and proud, or silent but deadly — what will you release onto the unsuspecting public?</p>
+            <p><strong>Features:</strong> Innovative gameplay · Family-friendly · Relatable protagonist</p>
+            <p>Find me on <a href="https://thegoblinguy.itch.io" target="_blank" style="color: var(--color-primary);">Itch.io!</a></p>
+            <!-- Add a screenshot later -->
+            <!-- <img src="assets/aba-screenshot.png" alt="ABA Game Screenshot" style="max-width:100%; border-radius:8px; margin-top:10px;"> -->
+        </div>
+
+        <!-- Project 2: Godot Prototypes -->
+        <div class="project-card">
+            <h2>⚙️ Godot Game Prototypes</h2>
+            <p>Various game prototypes and experiments built with Godot Engine — from platformers to physics sandboxes. More details coming soon!</p>
+        </div>
+
+        <!-- Project 3: 3D Character Model -->
+        <div class="project-card">
+            <h2>🧊 3D Character Model</h2>
+            <p>Custom 3D character models and animations created for game projects and visual experimentation.</p>
+            <!-- Add an image later -->
+            <!-- <img src="assets/3d-model.png" alt="3D Character Model" style="max-width:100%; border-radius:8px; margin-top:10px;"> -->
+        </div>
+
+        <!-- Press Kit Section -->
+        <div class="press-kit">
+            <h2>📰 Press &amp; Media</h2>
+            <p>Are you a journalist, content creator, or interested in covering our games? Download our press materials below.</p>
+
+            <h3 style="margin-top: 20px; color: var(--color-secondary);">ABA Game Press Kit</h3>
+            <ul style="list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 20px 40px;">
+                <li><strong>Developer:</strong> F.A.R.T Goblin Tech Ltd</li>
+                <li><strong>Release Date:</strong> Coming 2026</li>
+                <li><strong>Platforms:</strong> PC</li>
+                <li><strong>Price:</strong> TBD</li>
+            </ul>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; margin: 20px 0;">
+                <a href="/assets/press/aba-press-kit.zip" class="btn-primary" style="padding: 12px 24px; background: var(--color-primary); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; display: inline-block; transition: background 0.3s ease;">
+                    📥 Download Press Kit
+                </a>
+                <a href="mailto:business@fartgoblin.co.uk" style="padding: 12px 24px; background: var(--color-card); color: var(--color-text); border: 1px solid var(--color-border); border-radius: 8px; text-decoration: none; font-weight: 500; display: inline-block; transition: background 0.3s ease;">
+                    ✉️ Contact for Press
+                </a>
+            </div>
+
+            <p style="font-size: 0.9rem; opacity: 0.7;">Press kit includes: screenshots, logos, trailer, and fact sheet.</p>
+            <p style="font-size: 0.9rem; opacity: 0.5; margin-top: 5px;">🐕 (There's nothing there yet, you eager beaver!)</p>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>&copy; <span id="year"></span> F.A.R.T. Goblin Tech Ltd. All rights reserved. No goblins were harmed.</p>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
