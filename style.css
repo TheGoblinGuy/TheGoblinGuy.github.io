@@ -1,15 +1,25 @@
-/* Modern & Airy Color Scheme */
+/* ======================================== */
+/* MODERN & AIRY COLOR SCHEME              */
+/* ======================================== */
+
 :root {
-    --color-bg: #f8f9fa;      /* Light, airy background */
-    --color-text: #2d3436;    /* Dark, readable text */
-    --color-primary: #00b894; /* Softer, more elegant green */
-    --color-secondary: #6c5ce7; /* Purple accent for contrast */
-    --color-accent: #fd79a8;  /* Playful pink for highlights */
-    --color-card: #ffffff;    /* White cards for content */
-    --color-border: #dfe6e9;  /* Light borders */
+    --color-bg: #f8f9fa;
+    --color-text: #2d3436;
+    --color-primary: #00b894;
+    --color-secondary: #6c5ce7;
+    --color-accent: #fd79a8;
+    --color-card: #ffffff;
+    --color-border: #dfe6e9;
 }
 
-/* Base Styles */
+/* ======================================== */
+/* BASE STYLES                             */
+/* ======================================== */
+
+* {
+    box-sizing: border-box;
+}
+
 body {
     background-color: var(--color-bg);
     color: var(--color-text);
@@ -19,7 +29,16 @@ body {
     padding: 0;
 }
 
-/* Navigation */
+.page-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* ======================================== */
+/* NAVIGATION                              */
+/* ======================================== */
+
 nav {
     background-color: var(--color-card);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -61,18 +80,49 @@ nav a:hover {
     color: var(--color-primary);
 }
 
-/* Active page in nav */
 nav ul li a.active {
     font-weight: bold;
     border-bottom: 2px solid var(--color-primary);
 }
 
-/* About Page Specific Styles */
-.about-page {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 3rem 2rem;
+/* ======================================== */
+/* BUTTONS                                 */
+/* ======================================== */
+
+.btn-primary {
+    padding: 14px 30px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: background 0.3s ease;
 }
+
+.btn-primary:hover {
+    background: var(--color-secondary);
+}
+
+.btn-secondary {
+    padding: 14px 30px;
+    background: var(--color-card);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-block;
+    transition: background 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: var(--color-border);
+}
+
+/* ======================================== */
+/* ABOUT PAGE                              */
+/* ======================================== */
 
 .about-hero {
     text-align: center;
@@ -106,8 +156,8 @@ nav ul li a.active {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-.about-text p {
-    margin-bottom: 1.5rem;
+.about-text p:last-child {
+    margin-bottom: 0;
 }
 
 .skills-section h2 {
@@ -130,7 +180,12 @@ nav ul li a.active {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border-left: 4px solid var(--color-primary);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeInUp 0.6s ease-out;
 }
+
+.skill-item:nth-child(2) { animation-delay: 0.1s; }
+.skill-item:nth-child(3) { animation-delay: 0.2s; }
+.skill-item:nth-child(4) { animation-delay: 0.3s; }
 
 .skill-item:hover {
     transform: translateY(-4px);
@@ -150,67 +205,41 @@ nav ul li a.active {
     line-height: 1.5;
 }
 
-/* Footer */
-footer {
+/* ======================================== */
+/* PROJECTS PAGE                           */
+/* ======================================== */
+
+.project-card {
     background: var(--color-card);
-    text-align: center;
     padding: 2rem;
-    margin-top: 4rem;
-    border-top: 1px solid var(--color-border);
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .nav-container {
-        flex-direction: column;
-        gap: 1rem;
-    }
-    
-    nav ul {
-        gap: 1.5rem;
-    }
-    
-    .about-hero h1 {
-        font-size: 2.2rem;
-    }
-    
-    .about-text {
-        padding: 1.5rem;
-    }
-    
-    .skills-grid {
-        grid-template-columns: 1fr;
-    }
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
 }
 
-/* Animation for fun */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.project-card h2 {
+    margin-top: 0;
+    color: var(--color-text);
 }
 
-.skill-item {
-    animation: fadeInUp 0.6s ease-out;
-}
-
-.skill-item:nth-child(2) { animation-delay: 0.1s; }
-.skill-item:nth-child(3) { animation-delay: 0.2s; }
-.skill-item:nth-child(4) { animation-delay: 0.3s; }
-
-.page-container {
-    max-width: 1000px;
-    margin: 0 auto;
+.press-kit {
+    background: var(--color-card);
     padding: 2rem;
+    border-radius: 12px;
+    margin-top: 2.5rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 }
 
 /* ======================================== */
-/* CONTACT PAGE STYLES (New Additions)      */
+/* CONTACT PAGE                            */
 /* ======================================== */
 
 .contact-card {
@@ -294,43 +323,78 @@ footer {
     border-top: 1px solid var(--color-border);
     padding-top: 30px;
 }
+
 /* ======================================== */
-/* PROJECTS PAGE STYLES                     */
+/* ANIMATIONS                              */
 /* ======================================== */
 
-.project-card {
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ======================================== */
+/* FOOTER                                  */
+/* ======================================== */
+
+footer {
     background: var(--color-card);
+    text-align: center;
     padding: 2rem;
-    border-radius: 12px;
-    margin-bottom: 2rem;
-    border: 1px solid var(--color-border);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 4rem;
+    border-top: 1px solid var(--color-border);
 }
 
-.project-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-}
+/* ======================================== */
+/* RESPONSIVE DESIGN                       */
+/* ======================================== */
 
-.project-card h2 {
-    margin-top: 0;
-    color: var(--color-text);
-}
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 1rem;
+    }
 
-.press-kit {
-    background: var(--color-card);
-    padding: 2rem;
-    border-radius: 12px;
-    margin-top: 2.5rem;
-    border: 1px solid var(--color-border);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-}
+    nav ul {
+        gap: 1.5rem;
+    }
 
-.btn-primary:hover {
-    background: var(--color-secondary) !important;
-}
+    .about-hero h1 {
+        font-size: 2.2rem;
+    }
 
-.btn-secondary:hover {
-    background: var(--color-border) !important;
+    .about-text {
+        padding: 1.5rem;
+    }
+
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-card {
+        padding: 20px;
+    }
+
+    .contact-card .email-link {
+        font-size: 1.2rem;
+    }
+
+    .contact-social-item {
+        min-width: 140px;
+        padding: 15px 20px;
+    }
+
+    .project-card {
+        padding: 1.5rem;
+    }
+
+    .press-kit {
+        padding: 1.5rem;
+    }
 }
