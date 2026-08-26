@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fart Goblin Tech - Game Development & Creative Technology</title>
+    <meta name="description" content="F.A.R.T. Goblin Tech Ltd. We create engaging indie games, 3D animation, and creative digital experiences.">
+
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" href="/favicon.png">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">💨 Fart Goblin Tech</a>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="page-container">
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>🎮 Creative Technology &amp; Game Development</h1>
+                <p class="lead">Welcome to F.A.R.T. Goblin Tech Ltd. We build engaging indie games, immersive 3D worlds, and digital experiences with a quirky twist.</p>
+                <div class="cta-buttons" style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 25px;">
+                    <a href="projects.html" class="btn-primary" style="padding: 14px 30px; background: var(--color-primary); color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; transition: background 0.3s ease; display: inline-block;">
+                        🚀 View Our Work
+                    </a>
+                    <a href="contact.html" class="btn-secondary" style="padding: 14px 30px; background: var(--color-card); color: var(--color-text); border: 1px solid var(--color-border); border-radius: 8px; text-decoration: none; font-weight: 500; transition: background 0.3s ease; display: inline-block;">
+                        📬 Get in Touch
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Intro / Flavour Text -->
+        <section class="intro" style="text-align: center; max-width: 700px; margin: 40px auto 0; padding: 30px 20px; background: var(--color-card); border-radius: 12px; border: 1px solid var(--color-border); box-shadow: 0 4px 20px rgba(0,0,0,0.06);">
+            <p style="font-size: 1.2rem; margin-bottom: 10px;">
+                🛠️ <strong>Games and things are coming soon</strong> (we appreciate your patience!)
+            </p>
+            <p style="font-size: 1rem; opacity: 0.8;">
+                In the meantime, take a look around and get to know the goblin behind the code.
+            </p>
+            <p style="font-size: 0.9rem; opacity: 0.6; margin-top: 15px; border-top: 1px solid var(--color-border); padding-top: 15px;">
+                💨 P.S. Can you guess what the <strong>F.A.R.T.</strong> in F.A.R.T. Goblin Tech stands for?
+            </p>
+        </section>
+
+        <!-- Optional: Quick Links / Highlights -->
+        <section style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 40px;">
+            <div style="background: var(--color-card); padding: 20px 25px; border-radius: 12px; border: 1px solid var(--color-border); text-align: center; min-width: 160px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+                <p style="font-size: 2rem; margin: 0;">🎮</p>
+                <h3 style="margin: 8px 0 4px; font-size: 1rem;">Indie Games</h3>
+                <p style="font-size: 0.85rem; opacity: 0.6; margin: 0;">Godot Engine</p>
+            </div>
+            <div style="background: var(--color-card); padding: 20px 25px; border-radius: 12px; border: 1px solid var(--color-border); text-align: center; min-width: 160px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+                <p style="font-size: 2rem; margin: 0;">🧊</p>
+                <h3 style="margin: 8px 0 4px; font-size: 1rem;">3D Worlds</h3>
+                <p style="font-size: 0.85rem; opacity: 0.6; margin: 0;">Animation &amp; VFX</p>
+            </div>
+            <div style="background: var(--color-card); padding: 20px 25px; border-radius: 12px; border: 1px solid var(--color-border); text-align: center; min-width: 160px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+                <p style="font-size: 2rem; margin: 0;">🐕</p>
+                <h3 style="margin: 8px 0 4px; font-size: 1rem;">Blame the Dog</h3>
+                <p style="font-size: 0.85rem; opacity: 0.6; margin: 0;">Coming 2026</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; <span id="current-year"></span> F.A.R.T. Goblin Tech Ltd. All rights reserved. No goblins were harmed.</p>
+    </footer>
+
+    <!-- Dynamic copyright year -->
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
