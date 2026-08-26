@@ -294,3 +294,43 @@ footer {
     border-top: 1px solid var(--color-border);
     padding-top: 30px;
 }
+/* ======================================== */
+/* PROJECTS PAGE STYLES                     */
+/* ======================================== */
+
+.project-card {
+    background: var(--color-card);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.project-card h2 {
+    margin-top: 0;
+    color: var(--color-text);
+}
+
+.press-kit {
+    background: var(--color-card);
+    padding: 2rem;
+    border-radius: 12px;
+    margin-top: 2.5rem;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.btn-primary:hover {
+    background: var(--color-secondary) !important;
+}
+
+.btn-secondary:hover {
+    background: var(--color-border) !important;
+}
