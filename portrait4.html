@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>balanced form · androgynous grace</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0d101c;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, sans-serif;
+            padding: 1.2rem;
+        }
+        .card {
+            background: #181d2b;
+            padding: 1.5rem;
+            border-radius: 2.8rem;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.8);
+        }
+        canvas {
+            display: block;
+            width: 520px;
+            height: 680px;
+            border-radius: 2.2rem;
+            background: #ebe0d6;
+            box-shadow: inset 0 0 0 1px rgba(255,220,190,0.06);
+        }
+        .caption {
+            text-align: center;
+            margin-top: 1rem;
+            color: #a8a3b8;
+            font-size: 0.8rem;
+            border-top: 1px solid #2a3045;
+            padding-top: 1rem;
+        }
+        .caption span {
+            background: #232b3e;
+            padding: 0.15rem 1.2rem;
+            border-radius: 30px;
+            color: #cbc4d8;
+        }
+        @media (max-width: 580px) {
+            .card { padding: 0.8rem; border-radius: 2rem; }
+            canvas { width: 100%; height: auto; aspect-ratio: 520/680; border-radius: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <canvas id="balancedCanvas" width="520" height="680"></canvas>
+    <div class="caption"><span>✦  balanced · androgynous · fluid  ✦</span></div>
+</div>
+<script>
+    (function drawBalanced() {
+        const canvas = document.getElementById('balancedCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        // background
+        const bg = ctx.createRadialGradient(260, 320, 50, 260, 380, 440);
+        bg.addColorStop(0, '#efe4da');
+        bg.addColorStop(0.6, '#dfcfbe');
+        bg.addColorStop(1, '#cbb8a6');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, 520, 680);
+
+        // shadow
+        ctx.save();
+        ctx.shadowColor = 'rgba(30,20,12,0.18)';
+        ctx.shadowBlur = 32;
+        ctx.shadowOffsetY = 10;
+        ctx.beginPath();
+        ctx.ellipse(260, 660, 110, 20, 0, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(60,45,32,0.12)';
+        ctx.fill();
+        ctx.restore();
+
+        // --- body: athletic, balanced, flowing ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(20,12,6,0.18)';
+        ctx.shadowBlur = 22;
+        ctx.shadowOffsetY = 8;
+
+        // torso with subtle curve
+        ctx.beginPath();
+        ctx.moveTo(195, 300);
+        ctx.quadraticCurveTo(150, 340, 140, 420);
+        ctx.quadraticCurveTo(135, 490, 160, 560);
+        ctx.quadraticCurveTo(190, 600, 260, 615);
+        ctx.quadraticCurveTo(330, 600, 360, 560);
+        ctx.quadraticCurveTo(385, 490, 380, 420);
+        ctx.quadraticCurveTo(370, 340, 325, 300);
+        ctx.quadraticCurveTo(260, 285, 195, 300);
+        ctx.closePath();
+        ctx.fillStyle = '#c4ab98';
+        ctx.fill();
+
+        // lighter overlay for form
+        ctx.beginPath();
+        ctx.moveTo(205, 330);
+        ctx.quadraticCurveTo(170, 380, 165, 460);
+        ctx.quadraticCurveTo(175, 520, 215, 555);
+        ctx.quadraticCurveTo(260, 570, 305, 555);
+        ctx.quadraticCurveTo(345, 520, 355, 460);
+        ctx.quadraticCurveTo(350, 380, 315, 330);
+        ctx.quadraticCurveTo(260, 315, 205, 330);
+        ctx.fillStyle = '#d5beac';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.restore();
+
+        // --- arms: more natural, less lumpy ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(20,12,8,0.15)';
+        ctx.shadowBlur = 16;
+        ctx.shadowOffsetY = 5;
+        // left arm with curve
+        ctx.beginPath();
+        ctx.moveTo(195, 315);
+        ctx.quadraticCurveTo(135, 340, 110, 410);
+        ctx.quadraticCurveTo(95, 455, 110, 480);
+        ctx.quadraticCurveTo(125, 490, 140, 470);
+        ctx.quadraticCurveTo(150, 440, 155, 405);
+        ctx.quadraticCurveTo(165, 365, 195, 335);
+        ctx.fillStyle = '#dcc6b4';
+        ctx.fill();
+        // right arm
+        ctx.beginPath();
+        ctx.moveTo(325, 315);
+        ctx.quadraticCurveTo(385, 340, 410, 410);
+        ctx.quadraticCurveTo(425, 455, 410, 480);
+        ctx.quadraticCurveTo(395, 490, 380, 470);
+        ctx.quadraticCurveTo(370, 440, 365, 405);
+        ctx.quadraticCurveTo(355, 365, 325, 335);
+        ctx.fillStyle = '#dcc6b4';
+        ctx.fill();
+        ctx.restore();
+
+        // --- neck ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(10,8,6,0.12)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetY = 2;
+        ctx.beginPath();
+        ctx.ellipse(260, 275, 34, 24, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#e0ccbe';
+        ctx.fill();
+        ctx.restore();
+
+        // --- head: balanced features ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(20,12,6,0.2)';
+        ctx.shadowBlur = 20;
+        ctx.shadowOffsetY = 6;
+        ctx.beginPath();
+        ctx.ellipse(260, 185, 66, 80, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#eed7c8';
+        ctx.fill();
+        ctx.restore();
+
+        // --- hair: shorter, more modern, flowing back ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.15)';
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 4;
+
+        // swept back hair
+        ctx.beginPath();
+        ctx.moveTo(190, 140);
+        ctx.bezierCurveTo(140, 100, 100, 130, 80, 200);
+        ctx.bezierCurveTo(70, 260, 85, 340, 110, 380);
+        ctx.bezierCurveTo(130, 400, 155, 370, 160, 330);
+        ctx.bezierCurveTo(140, 270, 145, 180, 190, 140);
+        ctx.fillStyle = '#3d3026';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(330, 140);
+        ctx.bezierCurveTo(380, 100, 420, 130, 440, 200);
+        ctx.bezierCurveTo(450, 260, 435, 340, 410, 380);
+        ctx.bezierCurveTo(390, 400, 365, 370, 360, 330);
+        ctx.bezierCurveTo(380, 270, 375, 180, 330, 140);
+        ctx.fillStyle = '#3d3026';
+        ctx.fill();
+
+        // top layer with texture
+        ctx.beginPath();
+        ctx.moveTo(200, 130);
+        ctx.bezierCurveTo(155, 90, 120, 120, 105, 185);
+        ctx.bezierCurveTo(95, 240, 105, 310, 125, 350);
+        ctx.bezierCurveTo(140, 365, 155, 340, 158, 305);
+        ctx.bezierCurveTo(145, 250, 150, 170, 200, 130);
+        ctx.fillStyle = '#5a4738';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(320, 130);
+        ctx.bezierCurveTo(365, 90, 400, 120, 415, 185);
+        ctx.bezierCurveTo(425, 240, 415, 310, 395, 350);
+        ctx.bezierCurveTo(380, 365, 365, 340, 362, 305);
+        ctx.bezierCurveTo(375, 250, 370, 170, 320, 130);
+        ctx.fillStyle = '#5a4738';
+        ctx.fill();
+        ctx.restore();
+
+        // --- eyes: slightly larger, more expressive ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.05)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 1;
+        // left
+        ctx.beginPath();
+        ctx.ellipse(230, 178, 22, 17, -0.03, 0, Math.PI * 2);
+        ctx.fillStyle = '#f8efe8';
+        ctx.fill();
+        ctx.strokeStyle = '#2d231e';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(236, 180, 11, 12, 0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#4f3a2e';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(239, 178, 5.5, 6.5, 0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#1f150e';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(243, 174, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fcf9f5';
+        ctx.fill();
+        // right
+        ctx.beginPath();
+        ctx.ellipse(290, 178, 22, 17, 0.03, 0, Math.PI * 2);
+        ctx.fillStyle = '#f8efe8';
+        ctx.fill();
+        ctx.strokeStyle = '#2d231e';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(284, 180, 11, 12, -0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#4f3a2e';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(281, 178, 5.5, 6.5, -0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#1f150e';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(277, 174, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fcf9f5';
+        ctx.fill();
+        ctx.restore();
+
+        // --- eyebrows: defined but soft ---
+        ctx.save();
+        ctx.strokeStyle = '#3d2e23';
+        ctx.lineWidth = 3.5;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = 'rgba(0,0,0,0.04)';
+        ctx.shadowBlur = 4;
+        ctx.beginPath();
+        ctx.moveTo(202, 155);
+        ctx.quadraticCurveTo(230, 140, 256, 156);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(264, 156);
+        ctx.quadraticCurveTo(290, 140, 318, 155);
+        ctx.stroke();
+        ctx.restore();
+
+        // --- nose: subtle, balanced ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(30,18,10,0.06)';
+        ctx.shadowBlur = 5;
+        ctx.shadowOffsetY = 1;
+        ctx.beginPath();
+        ctx.moveTo(260, 188);
+        ctx.quadraticCurveTo(252, 218, 245, 232);
+        ctx.quadraticCurveTo(260, 240, 260, 242);
+        ctx.quadraticCurveTo(260, 240, 275, 232);
+        ctx.quadraticCurveTo(268, 218, 260, 188);
+        ctx.fillStyle = '#e5cdbc';
+        ctx.fill();
+        ctx.strokeStyle = '#b0927d';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+        ctx.restore();
+
+        // --- mouth: neutral, gentle ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(40,20,10,0.1)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetY = 2;
+        ctx.beginPath();
+        ctx.moveTo(235, 258);
+        ctx.quadraticCurveTo(260, 274, 285, 258);
+        ctx.quadraticCurveTo(260, 282, 235, 258);
+        ctx.fillStyle = '#b5624a';
+        ctx.fill();
+        ctx.strokeStyle = '#8f4535';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(242, 264);
+        ctx.quadraticCurveTo(260, 278, 278, 264);
+        ctx.strokeStyle = '#a5533e';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+        ctx.restore();
+
+        // --- soft glow ---
+        ctx.save();
+        ctx.globalAlpha = 0.05;
+        const glow = ctx.createRadialGradient(260, 235, 30, 260, 270, 300);
+        glow.addColorStop(0, '#ffeedd');
+        glow.addColorStop(1, 'transparent');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, 520, 680);
+        ctx.restore();
+
+        // --- vignette ---
+        const vig = ctx.createRadialGradient(260, 290, 150, 260, 290, 420);
+        vig.addColorStop(0, 'rgba(0,0,0,0)');
+        vig.addColorStop(1, 'rgba(20,14,10,0.12)');
+        ctx.fillStyle = vig;
+        ctx.fillRect(0, 0, 520, 680);
+
+        // signature
+        ctx.fillStyle = '#5a4c40';
+        ctx.globalAlpha = 0.12;
+        ctx.font = '9px "Segoe UI", monospace';
+        ctx.fillText('✦  balanced · androgynous · fluid  ✦', 330, 668);
+        ctx.globalAlpha = 1.0;
+    })();
+</script>
+</body>
+</html>
