@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ASCII CITY · COLOR · WORKING</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            cursor: crosshair;
+        }
+        .container {
+            background: #0d0d12;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 0 80px rgba(0, 50, 150, 0.05);
+            border: 1px solid rgba(255,255,255,0.02);
+        }
+        pre {
+            margin: 0;
+            padding: 0;
+            line-height: 1.15;
+            font-size: 13px;
+            font-weight: 400;
+            background: #0a0a0f;
+            border-radius: 8px;
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            letter-spacing: 0.3px;
+            color: #33ff33;
+            text-shadow: 0 0 5px rgba(51, 255, 51, 0.1);
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            color: rgba(255,255,255,0.12);
+            font-size: 10px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+        .controls kbd {
+            background: rgba(255,255,255,0.03);
+            padding: 2px 10px;
+            border-radius: 3px;
+            border: 1px solid rgba(255,255,255,0.03);
+            color: rgba(255,255,255,0.1);
+        }
+        .lock-hint {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255,255,255,0.06);
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 3px;
+            pointer-events: none;
+            z-index: 10;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        .lock-hint.show { opacity: 1; }
+        @media (max-width: 768px) {
+            .container { padding: 6px; }
+            pre { font-size: 6px; line-height: 1.1; }
+            .controls { font-size: 8px; gap: 0.6rem; }
+            .controls kbd { padding: 1px 6px; }
+        }
+    </style>
+</head>
+<body>
+<div class="lock-hint" id="lockHint">🎯 CLICK TO LOCK MOUSE · ESC TO RELEASE</div>
+<div class="container">
+    <pre id="asciiOutput"></pre>
+    <div class="controls">
+        <span><kbd>W</kbd> fwd</span>
+        <span><kbd>S</kbd> back</span>
+        <span><kbd>A</kbd> <kbd>D</kbd> strafe</span>
+        <span><kbd>🖱️</kbd> look</span>
+        <span><kbd>Shift</kbd> sprint</span>
+        <span><kbd>R</kbd> reset</span>
+    </div>
+</div>
+<script>
+(function denseAsciiCity() {
+    const output = document.getElementById('asciiOutput');
+    if (!output) return;
+
+    // --- settings ---
+    const COLS = 80;
+    const ROWS = 40;
+    const FOV = 70;
+    const MAX_DEPTH = 35;
+
+    // Character set for brightness
+    const CHARS = ' .,-~:;=!*#&@%$?+';
+
+    // --- DENSE CITY MAP ---
+    const MAP = [
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,2,2,0,0,0,3,3,3,0,0,0,0,0,2,2,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,2,4,0,0,0,3,5,3,0,0,0,0,0,2,2,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,2,2,0,0,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    ];
+
+    const MAP_W = MAP[0].length;
+    const MAP_H = MAP.length;
+
+    // --- player ---
+    let player = {
+        x: 15.5,
+        y: 15.5,
+        angle: 0.3,
+        pitch: 0,
+        fov: FOV,
+        moveSpeed: 0.06,
+        rotSpeed: 0.002
+    };
+
+    // --- mouse lock ---
+    let isLocked = false;
+    const lockHint = document.getElementById('lockHint');
+
+    document.addEventListener('click', () => {
+        if (!isLocked) output.requestPointerLock?.();
+    });
+
+    document.addEventListener('pointerlockchange', () => {
+        isLocked = document.pointerLockElement === output;
+        lockHint.classList.toggle('show', !isLocked);
+        if (isLocked) lockHint.classList.remove('show');
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isLocked) return;
+        const sens = 0.002;
+        player.angle += e.movementX * sens;
+        player.pitch = Math.max(-0.8, Math.min(0.8, player.pitch - e.movementY * sens));
+    });
+
+    // --- keyboard ---
+    const keys = {};
+    document.addEventListener('keydown', (e) => {
+        keys[e.key.toLowerCase()] = true;
+        if (e.key === 'r' || e.key === 'R') resetPlayer();
+        if (e.key === 'Escape' && isLocked) document.exitPointerLock();
+    });
+    document.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+
+    function resetPlayer() {
+        player.x = 15.5;
+        player.y = 15.5;
+        player.angle = 0.3;
+        player.pitch = 0;
+    }
+
+    // --- color palette (RGB values for different building types) ---
+    const COLORS = [
+        { r: 30, g: 30, b: 40 },    // 0: dark
+        { r: 180, g: 120, b: 80 },  // 1: warm brown
+        { r: 160, g: 140, b: 100 }, // 2: tan
+        { r: 140, g: 160, b: 180 }, // 3: cool blue
+        { r: 180, g: 160, b: 120 }, // 4: gold
+        { r: 120, g: 180, b: 140 }, // 5: green
+        { r: 200, g: 140, b: 100 }, // 6: orange
+        { r: 160, g: 120, b: 160 }, // 7: purple
+        { r: 100, g: 140, b: 180 }, // 8: blue
+    ];
+
+    // --- get color with distance fade ---
+    function getColor(wallType, distance) {
+        const distFactor = Math.max(0.1, 1 - (distance / MAX_DEPTH));
+        const fade = Math.pow(distFactor, 0.6) * 0.9 + 0.1;
+        const base = COLORS[wallType % COLORS.length] || COLORS[1];
+        
+        // Night time: more blue, less red/green
+        const nightFactor = 0.6;
+        const r = Math.floor(base.r * fade * nightFactor);
+        const g = Math.floor(base.g * fade * nightFactor * 0.7);
+        const b = Math.floor(base.b * fade * 1.2 + 20);
+        
+        // Window glow (random windows)
+        const windowGlow = Math.random() > 0.85 ? 80 : 0;
+        
+        return {
+            r: Math.min(255, r + windowGlow),
+            g: Math.min(255, g + windowGlow * 0.5),
+            b: Math.min(255, b + windowGlow * 0.3)
+        };
+    }
+
+    // --- raycasting ---
+    function castRays() {
+        const frame = [];
+        const halfRows = ROWS / 2;
+
+        for (let col = 0; col < COLS; col++) {
+            const rayAngle = player.angle + (col / COLS - 0.5) * (player.fov * Math.PI / 180);
+            
+            let dist = 0;
+            let hit = false;
+            let wallType = 0;
+            let wallHeight = 1;
+
+            for (let step = 0; step < MAX_DEPTH * 3; step++) {
+                const testX = player.x + Math.cos(rayAngle) * dist;
+                const testY = player.y + Math.sin(rayAngle) * dist;
+                const mapX = Math.floor(testX);
+                const mapY = Math.floor(testY);
+                
+                if (mapX < 0 || mapX >= MAP_W || mapY < 0 || mapY >= MAP_H) {
+                    hit = true;
+                    wallType = 1;
+                    break;
+                }
+                
+                if (MAP[mapY][mapX] > 0) {
+                    hit = true;
+                    wallType = MAP[mapY][mapX];
+                    wallHeight = Math.min(wallType, 5);
+                    break;
+                }
+                
+                dist += 0.05;
+                if (dist > MAX_DEPTH) break;
+            }
+
+            let colStr = '';
+            for (let row = 0; row < ROWS; row++) {
+                if (hit && dist < MAX_DEPTH) {
+                    const wallHeightPixels = (ROWS * 1.8) / (dist * 0.4 + 0.1) * wallHeight;
+                    const startY = halfRows - wallHeightPixels / 2 + player.pitch * 15;
+                    const endY = halfRows + wallHeightPixels / 2 + player.pitch * 15;
+                    
+                    if (row >= startY && row <= endY) {
+                        // Wall - get brightness and character
+                        const wallPos = (row - startY) / (endY - startY);
+                        const distFactor = Math.max(0, 1 - (dist / MAX_DEPTH));
+                        const brightness = distFactor * 0.8 + 0.2;
+                        const texture = Math.sin(wallPos * 20 + col * 0.5) * 0.2 + 0.8;
+                        const finalBright = Math.min(1, brightness * texture);
+                        const charIndex = Math.floor(finalBright * (CHARS.length - 1));
+                        const char = CHARS[charIndex] || ' ';
+                        const color = getColor(wallType, dist);
+                        
+                        // Use ANSI color codes for the character
+                        colStr += `\x1b[38;2;${color.r};${color.g};${color.b}m${char}\x1b[0m`;
+                    } else if (row < startY) {
+                        // Sky - moon and stars
+                        const skyY = (row / ROWS) * 2 - 1 + player.pitch;
+                        const skyX = (col / COLS) * 2 - 1;
+                        const moonX = 0.3, moonY = -0.35;
+                        const distToMoon = Math.sqrt((skyX - moonX)**2 + (skyY - moonY)**2);
+                        
+                        if (distToMoon < 0.12) {
+                            colStr += '\x1b[38;2;255;240;210m☾\x1b[0m';
+                        } else {
+                            const starSeed = col * 13 + row * 7;
+                            const isStar = Math.sin(starSeed) > 0.985;
+                            if (isStar) {
+                                const sc = Math.floor(180 + Math.random() * 75);
+                                colStr += `\x1b[38;2;${sc};${sc};${sc+20}m·\x1b[0m`;
+                            } else {
+                                colStr += ' ';
+                            }
+                        }
+                    } else {
+                        // Ground
+                        const gb = 0.05 + (row / ROWS) * 0.1;
+                        const idx = Math.floor(gb * 0.4);
+                        const char = ' .,-~:;=!*#$@'[idx] || ' ';
+                        const gc = Math.floor(15 + gb * 20);
+                        colStr += `\x1b[38;2;${gc};${gc+5};${gc+20}m${char}\x1b[0m`;
+                    }
+                } else {
+                    // No hit - sky or ground
+                    const skyY = (row / ROWS) * 2 - 1 + player.pitch;
+                    if (skyY < 0) {
+                        const skyX = (col / COLS) * 2 - 1;
+                        const moonX = 0.3, moonY = -0.35;
+                        const distToMoon = Math.sqrt((skyX - moonX)**2 + (skyY - moonY)**2);
+                        if (distToMoon < 0.12) {
+                            colStr += '\x1b[38;2;255;240;210m☾\x1b[0m';
+                        } else {
+                            const starSeed = col * 13 + row * 7;
+                            const isStar = Math.sin(starSeed) > 0.985;
+                            if (isStar) {
+                                const sc = Math.floor(180 + Math.random() * 75);
+                                colStr += `\x1b[38;2;${sc};${sc};${sc+20}m·\x1b[0m`;
+                            } else {
+                                colStr += ' ';
+                            }
+                        }
+                    } else {
+                        const gb = 0.05 + (row / ROWS) * 0.1;
+                        const idx = Math.floor(gb * 0.4);
+                        const char = ' .,-~:;=!*#$@'[idx] || ' ';
+                        const gc = Math.floor(15 + gb * 20);
+                        colStr += `\x1b[38;2;${gc};${gc+5};${gc+20}m${char}\x1b[0m`;
+                    }
+                }
+            }
+            frame.push(colStr);
+        }
+        return frame;
+    }
+
+    // --- render ---
+    function render() {
+        const frame = castRays();
+        let outputStr = '';
+        for (let row = 0; row < ROWS; row++) {
+            for (let col = 0; col < COLS; col++) {
+                outputStr += frame[col][row] || ' ';
+            }
+            outputStr += '\x1b[0m\n';
+        }
+        
+        const hud = `\x1b[38;2;40;50;70mPOS: (${player.x.toFixed(1)}, ${player.y.toFixed(1)})  ANG: ${(player.angle * 180 / Math.PI % 360).toFixed(0)}°  FPS: 60\x1b[0m`;
+        outputStr = outputStr.slice(0, outputStr.length - 1) + '\n' + hud;
+        output.textContent = outputStr;
+    }
+
+    // --- update ---
+    function update() {
+        let moveX = 0, moveY = 0;
+        const speed = keys['shift'] ? player.moveSpeed * 1.8 : player.moveSpeed;
+        
+        if (keys['w']) {
+            moveX += Math.cos(player.angle) * speed;
+            moveY += Math.sin(player.angle) * speed;
+        }
+        if (keys['s']) {
+            moveX -= Math.cos(player.angle) * speed;
+            moveY -= Math.sin(player.angle) * speed;
+        }
+        if (keys['a']) {
+            moveX += Math.cos(player.angle - Math.PI/2) * speed * 0.7;
+            moveY += Math.sin(player.angle - Math.PI/2) * speed * 0.7;
+        }
+        if (keys['d']) {
+            moveX += Math.cos(player.angle + Math.PI/2) * speed * 0.7;
+            moveY += Math.sin(player.angle + Math.PI/2) * speed * 0.7;
+        }
+
+        // Collision detection
+        const newX = player.x + moveX;
+        const newY = player.y + moveY;
+        
+        // Try X
+        if (newX > 0.5 && newX < MAP_W - 0.5) {
+            const mapX = Math.floor(newX + 0.1);
+            const mapY = Math.floor(player.y + 0.1);
+            if (mapX >= 0 && mapX < MAP_W && mapY >= 0 && mapY < MAP_H) {
+                if (MAP[mapY][mapX] === 0) {
+                    player.x = newX;
+                }
+            }
+        }
+        
+        // Try Y
+        if (newY > 0.5 && newY < MAP_H - 0.5) {
+            const mapX = Math.floor(player.x + 0.1);
+            const mapY = Math.floor(newY + 0.1);
+            if (mapX >= 0 && mapX < MAP_W && mapY >= 0 && mapY < MAP_H) {
+                if (MAP[mapY][mapX] === 0) {
+                    player.y = newY;
+                }
+            }
+        }
+        
+        // Keep in bounds
+        player.x = Math.max(0.5, Math.min(MAP_W - 0.5, player.x));
+        player.y = Math.max(0.5, Math.min(MAP_H - 0.5, player.y));
+    }
+
+    // --- game loop ---
+    function gameLoop() {
+        update();
+        render();
+        requestAnimationFrame(gameLoop);
+    }
+
+    // --- start ---
+    render();
+    setTimeout(gameLoop, 100);
+
+    console.log('🌃 COLOR ASCII CITY loaded!');
+    console.log('Buildings should now be visible with colors!');
+})();
+</script>
+</body>
+</html>
