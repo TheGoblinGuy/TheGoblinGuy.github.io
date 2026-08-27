@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ASCII CITY · Physics + GPU Rendering</title>
+    <title>ASCII CITY · Physics + Rendering · FIXED</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -32,6 +32,7 @@
             white-space: pre-wrap;
             word-wrap: break-word;
             font-family: 'Courier New', monospace;
+            cursor: crosshair;
         }
         #output span { display: inline; }
         .controls {
@@ -106,17 +107,96 @@
 <script>
 // ============================================================
 //  ARCHITECTURE: Physics Engine (CPU) + Renderer (Canvas/GPU)
+//  FIXED: Input system, pointer lock, player controls
 // ============================================================
 
-// --- 1. WORLD DATA (Physics State) ---
-const WORLD = {
+// --- 1. INPUT SYSTEM ---
+class InputSystem {
+    constructor() {
+        this.keys = {};
+        this.mouse = { x: 0, y: 0, movementX: 0, movementY: 0 };
+        this.isLocked = false;
+        this.listeners = [];
+        
+        this.setupKeyboard();
+        this.setupMouse();
+    }
+
+    setupKeyboard() {
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            this.keys[key] = true;
+            // Notify listeners
+            this.notify('keydown', { key, value: true });
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            const key = e.key.toLowerCase();
+            this.keys[key] = false;
+            this.notify('keyup', { key, value: false });
+        });
+    }
+
+    setupMouse() {
+        const output = document.getElementById('output');
+        const hint = document.getElementById('hint');
+        
+        // Click to lock pointer
+        output.addEventListener('click', () => {
+            if (!this.isLocked) {
+                output.requestPointerLock?.();
+            }
+        });
+
+        // Pointer lock change
+        document.addEventListener('pointerlockchange', () => {
+            this.isLocked = document.pointerLockElement === output;
+            hint.classList.toggle('show', !this.isLocked);
+            if (this.isLocked) hint.classList.remove('show');
+            this.notify('lockchange', { locked: this.isLocked });
+        });
+
+        // Mouse move
+        document.addEventListener('mousemove', (e) => {
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
+            
+            if (this.isLocked) {
+                this.mouse.movementX = e.movementX || 0;
+                this.mouse.movementY = e.movementY || 0;
+                this.notify('mousemove', { 
+                    movementX: this.mouse.movementX, 
+                    movementY: this.mouse.movementY 
+                });
+            }
+        });
+    }
+
+    // Add listener
+    addListener(callback) {
+        this.listeners.push(callback);
+    }
+
+    // Notify all listeners
+    notify(event, data) {
+        this.listeners.forEach(cb => cb(event, data));
+    }
+
+    // Check if key is pressed
+    isKeyDown(key) {
+        return this.keys[key] || false;
+    }
+}
+
+// --- 2. WORLD DATA ---
+const WORLD_DATA = {
     width: 40,
     height: 40,
     cells: [],
     buildings: []
 };
 
-// Building data structure
+// Building class
 class Building {
     constructor(x, z, w, d, h, type) {
         this.x = x;
@@ -126,35 +206,30 @@ class Building {
         this.height = h;
         this.type = type;
         this.hasWindows = Math.random() > 0.3;
-        this.windowPattern = Math.floor(Math.random() * 100);
     }
 }
 
-// --- 2. PHYSICS ENGINE ---
+// --- 3. PHYSICS ENGINE ---
 class PhysicsEngine {
-    constructor(world) {
-        this.world = world;
-        this.gravity = -9.8;
-        this.friction = 0.9;
+    constructor(worldData) {
+        this.world = worldData;
         this.player = {
             x: 8,
             z: 8,
             y: 1.6,
             vx: 0,
             vz: 0,
-            vy: 0,
             angle: 0.3,
             pitch: 0,
             height: 1.6,
-            speed: 0.06,
-            grounded: true
+            speed: 0.06
         };
         this.keys = {};
         this.deltaTime = 1/60;
         this.time = 0;
+        this.generateWorld();
     }
 
-    // Generate world with buildings
     generateWorld() {
         const { width, height, cells } = this.world;
         
@@ -233,7 +308,6 @@ class PhysicsEngine {
         }
     }
 
-    // Get building at position
     getBuilding(x, z) {
         const mx = Math.floor(x);
         const mz = Math.floor(z);
@@ -241,13 +315,11 @@ class PhysicsEngine {
         return this.world.cells[mz][mx];
     }
 
-    // Check if position is blocked
     isBlocked(x, z) {
         const cell = this.getBuilding(x, z);
         return cell && cell.height > 0;
     }
 
-    // Update physics
     update(deltaTime) {
         this.deltaTime = Math.min(deltaTime, 0.05);
         this.time += this.deltaTime;
@@ -302,8 +374,6 @@ class PhysicsEngine {
         p.x = Math.max(0.5, Math.min(this.world.width - 0.5, p.x));
         p.z = Math.max(0.5, Math.min(this.world.height - 0.5, p.z));
         
-        // Grounded check
-        p.grounded = true;
         p.y = p.height;
     }
 
@@ -313,7 +383,7 @@ class PhysicsEngine {
     }
 }
 
-// --- 3. ASCII RENDERER (GPU accelerated via Canvas) ---
+// --- 4. ASCII RENDERER ---
 class AsciiRenderer {
     constructor(outputElement, physics) {
         this.output = outputElement;
@@ -339,13 +409,11 @@ class AsciiRenderer {
             { r: 210, g: 130, b: 100 },
             { r: 140, g: 200, b: 160 },
         ];
-        this.frameBuffer = [];
-        this.lastRenderTime = 0;
         this.fps = 0;
         this.frameCount = 0;
+        this.lastRenderTime = 0;
     }
 
-    // Get color for building
     getBuildingColor(type, dist, heightPos) {
         const base = this.COLORS[type % this.COLORS.length] || this.COLORS[0];
         const fade = Math.max(0.05, 1 - (dist / this.MAX_DIST));
@@ -361,7 +429,6 @@ class AsciiRenderer {
         };
     }
 
-    // Get character for building feature
     getBuildingChar(heightPos, wallPos, dist, type) {
         const hasWindow = Math.sin(heightPos * 35 + wallPos * 20 + type * 7) > 0.55;
         if (hasWindow && dist < 15) {
@@ -379,12 +446,10 @@ class AsciiRenderer {
         return this.CHARS.wall[idx] || ' ';
     }
 
-    // Render frame
     render() {
         const p = this.physics.player;
         const fovRad = this.FOV * Math.PI / 180;
         const halfRows = this.ROWS / 2;
-        const world = this.physics.world;
         
         let outputStr = '';
         
@@ -436,7 +501,6 @@ class AsciiRenderer {
                             char = roofChar;
                         }
                     } else if (adjustedY < wallTop) {
-                        // Sky with moon/stars
                         const skyX = (col / this.COLS) * 2 - 1;
                         const skyY = (row / this.ROWS) * 2 - 1;
                         const moonX = 0.35, moonY = -0.45;
@@ -513,81 +577,37 @@ class AsciiRenderer {
     }
 }
 
-// --- 4. GAME LOOP (Separation of concerns) ---
+// --- 5. GAME CLASS ---
 class Game {
     constructor() {
         this.output = document.getElementById('output');
-        this.physics = new PhysicsEngine(WORLD);
+        this.physics = new PhysicsEngine(WORLD_DATA);
         this.renderer = new AsciiRenderer(this.output, this.physics);
+        this.input = new InputSystem();
         
-        // Generate world
-        this.physics.generateWorld();
-        
-        // Input handling
-        this.setupInput();
-        
-        // Pointer lock
-        this.setupPointerLock();
+        // Connect input to physics
+        this.input.addListener((event, data) => {
+            if (event === 'keydown' || event === 'keyup') {
+                this.physics.setKey(data.key, data.value);
+            }
+            if (event === 'mousemove' && this.input.isLocked) {
+                const sens = 0.003;
+                const p = this.physics.player;
+                p.angle += data.movementX * sens;
+                p.pitch = Math.max(-0.6, Math.min(0.6, p.pitch - data.movementY * sens));
+            }
+            if (event === 'keydown' && data.key === 'r') {
+                this.resetPlayer();
+            }
+        });
         
         // Start loop
         this.lastTime = performance.now();
         this.loop();
     }
 
-    setupInput() {
-        document.addEventListener('keydown', (e) => {
-            const key = e.key.toLowerCase();
-            this.physics.setKey(key, true);
-            if (key === 'r') resetPlayer();
-            if (key === 'escape' && this.isLocked) document.exitPointerLock();
-        });
-        document.addEventListener('keyup', (e) => {
-            this.physics.setKey(e.key.toLowerCase(), false);
-        });
-    }
-
-    setupPointerLock() {
-        this.isLocked = false;
-        const hint = document.getElementById('hint');
-        
-        document.addEventListener('click', () => {
-            if (!this.isLocked) this.output.requestPointerLock?.();
-        });
-        
-        document.addEventListener('pointerlockchange', () => {
-            this.isLocked = document.pointerLockElement === this.output;
-            hint.classList.toggle('show', !this.isLocked);
-            if (this.isLocked) hint.classList.remove('show');
-        });
-        
-        document.addEventListener('mousemove', (e) => {
-            if (!this.isLocked) return;
-            const sens = 0.003;
-            const p = this.physics.player;
-            p.angle += e.movementX * sens;
-            p.pitch = Math.max(-0.6, Math.min(0.6, p.pitch - e.movementY * sens));
-        });
-    }
-
-    loop() {
-        const now = performance.now();
-        const deltaTime = (now - this.lastTime) / 1000;
-        this.lastTime = now;
-        
-        // Physics update (fixed timestep)
-        this.physics.update(deltaTime);
-        
-        // Render (every frame)
-        this.renderer.render();
-        
-        requestAnimationFrame(() => this.loop());
-    }
-}
-
-// --- 5. START ---
-function resetPlayer() {
-    const p = window._game?.physics?.player;
-    if (p) {
+    resetPlayer() {
+        const p = this.physics.player;
         p.x = 8;
         p.z = 8;
         p.y = 1.6;
@@ -596,13 +616,29 @@ function resetPlayer() {
         p.vx = 0;
         p.vz = 0;
     }
+
+    loop() {
+        const now = performance.now();
+        const deltaTime = (now - this.lastTime) / 1000;
+        this.lastTime = now;
+        
+        // Physics update
+        this.physics.update(deltaTime);
+        
+        // Render
+        this.renderer.render();
+        
+        requestAnimationFrame(() => this.loop());
+    }
 }
+
+// --- 6. START ---
+console.log('🏙️ ASCII City with Physics + GPU Rendering');
+console.log('Controls: WASD to move, Mouse to look, Shift to sprint, R to reset');
+console.log('Click the canvas to lock the mouse pointer.');
 
 const game = new Game();
 window._game = game;
-
-console.log('🏙️ ASCII City with Physics + GPU Rendering');
-console.log('Architecture: Physics Engine (CPU) + Renderer (Canvas/GPU)');
 </script>
 </body>
 </html>
