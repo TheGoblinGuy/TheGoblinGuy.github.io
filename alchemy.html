@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Palette Shortlist — FART Goblin Tech</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #f4f5f7;  /* ← NEUTRAL BACKGROUND */
+            padding: 2rem;
+            color: #1e1e2a;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            color: #1e1e2a;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1rem;
+            color: #6a6a7a;
+            margin-bottom: 2.5rem;
+        }
+
+        .scheme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .scheme-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #e4e4e8;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .scheme-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+        }
+
+        .scheme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid #ececec;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .scheme-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e1e2a;
+        }
+
+        .scheme-tag {
+            font-size: 0.65rem;
+            background: #ececec;
+            padding: 2px 12px;
+            border-radius: 20px;
+            color: #5a5a6a;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .swatch-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .swatch {
+            flex: 1;
+            min-width: 50px;
+            height: 72px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+            padding: 4px;
+            text-align: center;
+            line-height: 1.3;
+            border: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .swatch-light {
+            color: #1e1e2a;
+            text-shadow: none;
+        }
+
+        .swatch-hex {
+            font-size: 0.5rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .swatch-label {
+            font-size: 0.5rem;
+            opacity: 0.6;
+            font-weight: 400;
+        }
+
+        .vibe {
+            font-size: 0.8rem;
+            color: #5a5a6a;
+            margin-top: 6px;
+            font-style: italic;
+            border-top: 1px solid #ececec;
+            padding-top: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #8a8a9a;
+            font-size: 0.85rem;
+            border-top: 1px solid #e4e4e8;
+            padding-top: 2rem;
+        }
+
+        .highlight {
+            border: 2px solid #6b4c9a;
+            background: #faf8fc;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .scheme-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎨 FART Goblin Tech — Palette Shortlist</h1>
+    <p class="subtitle">Your custom hybrid + 5 favourites · neutral background for accurate colour judgement</p>
+
+    <div class="scheme-grid">
+
+        <!-- ========================================================== -->
+        <!-- 1. YOUR CUSTOM HYBRID: "GOBLIN ALCHEMIST"                   -->
+        <!-- ========================================================== -->
+        <div class="scheme-card highlight">
+            <div class="scheme-header">
+                <span class="scheme-name">🧪 Goblin Alchemist</span>
+                <span class="scheme-tag">★ your hybrid</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#4a7c59;">Primary<br><span class="swatch-hex">#4a7c59</span></div>
+                <div class="swatch" style="background:#6b4c9a;">Secondary<br><span class="swatch-hex">#6b4c9a</span></div>
+                <div class="swatch" style="background:#c87a3a;">Accent<br><span class="swatch-hex">#c87a3a</span></div>
+                <div class="swatch" style="background:#f5ede4; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f5ede4</span></div>
+                <div class="swatch" style="background:#2c2b26;">Text<br><span class="swatch-hex">#2c2b26</span></div>
+            </div>
+            <div class="vibe">🌿 Warm · Mystical · Goblin-Alchemist — green + purple + orange</div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 2. GOBLIN CORE                                              -->
+        <!-- ========================================================== -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🧌 Goblin Core</span>
+                <span class="scheme-tag">earthy</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#4a7c59;">Primary<br><span class="swatch-hex">#4a7c59</span></div>
+                <div class="swatch" style="background:#8b5e3c;">Secondary<br><span class="swatch-hex">#8b5e3c</span></div>
+                <div class="swatch" style="background:#c87a3a;">Accent<br><span class="swatch-hex">#c87a3a</span></div>
+                <div class="swatch" style="background:#f5ede4; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f5ede4</span></div>
+                <div class="swatch" style="background:#2c2b26;">Text<br><span class="swatch-hex">#2c2b26</span></div>
+            </div>
+            <div class="vibe">🌲 Warm · Organic · Mischievous — goblin's workshop</div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 3. LUMBRIDGE (OSRS)                                        -->
+        <!-- ========================================================== -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🏰 Lumbridge</span>
+                <span class="scheme-tag">OSRS</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#6a7a5a;">Primary<br><span class="swatch-hex">#6a7a5a</span></div>
+                <div class="swatch" style="background:#b08a6a;">Secondary<br><span class="swatch-hex">#b08a6a</span></div>
+                <div class="swatch" style="background:#d4b08a;">Accent<br><span class="swatch-hex">#d4b08a</span></div>
+                <div class="swatch" style="background:#f0e8d8; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f0e8d8</span></div>
+                <div class="swatch" style="background:#2a2a22;">Text<br><span class="swatch-hex">#2a2a22</span></div>
+            </div>
+            <div class="vibe">🌾 Grassy · Medieval · Parchment — like walking through Lumbridge</div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 4. ALCHEMY (Wizard)                                        -->
+        <!-- ========================================================== -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🧪 Alchemy</span>
+                <span class="scheme-tag">wizard</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#6b4c9a;">Primary<br><span class="swatch-hex">#6b4c9a</span></div>
+                <div class="swatch" style="background:#2e8b57;">Secondary<br><span class="swatch-hex">#2e8b57</span></div>
+                <div class="swatch" style="background:#d4a373;">Accent<br><span class="swatch-hex">#d4a373</span></div>
+                <div class="swatch" style="background:#f9f3e8; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f9f3e8</span></div>
+                <div class="swatch" style="background:#2d2a24;">Text<br><span class="swatch-hex">#2d2a24</span></div>
+            </div>
+            <div class="vibe">⚗️ Mystical · Potion-brewing · Arcane — tech-wizard goblin</div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 5. HOENN STARTER (GBA)                                     -->
+        <!-- ========================================================== -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🌊 Hoenn Starter</span>
+                <span class="scheme-tag">GBA</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#3a8a7a;">Primary<br><span class="swatch-hex">#3a8a7a</span></div>
+                <div class="swatch" style="background:#e87a4a;">Secondary<br><span class="swatch-hex">#e87a4a</span></div>
+                <div class="swatch" style="background:#f0c04a;">Accent<br><span class="swatch-hex">#f0c04a</span></div>
+                <div class="swatch" style="background:#f8f4ea; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f8f4ea</span></div>
+                <div class="swatch" style="background:#1a2a22;">Text<br><span class="swatch-hex">#1a2a22</span></div>
+            </div>
+            <div class="vibe">🌴 Tropical · Starter-town · GBA glow — Littleroot Town</div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- 6. MODERN & AIRY (Current)                                 -->
+        <!-- ========================================================== -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🌿 Modern &amp; Airy</span>
+                <span class="scheme-tag">current</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#00b894;">Primary<br><span class="swatch-hex">#00b894</span></div>
+                <div class="swatch" style="background:#6c5ce7;">Secondary<br><span class="swatch-hex">#6c5ce7</span></div>
+                <div class="swatch" style="background:#fd79a8;">Accent<br><span class="swatch-hex">#fd79a8</span></div>
+                <div class="swatch" style="background:#f8f9fa; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f8f9fa</span></div>
+                <div class="swatch" style="background:#2d3436;">Text<br><span class="swatch-hex">#2d3436</span></div>
+            </div>
+            <div class="vibe">🌱 Fresh · Clean · Approachable — your current look</div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        💨 Copy the hex values from any palette into your <code>style.css</code> <code>:root</code> section.<br>
+        Neutral background: <code>#f4f5f7</code> — accurate, clean, unbiased.
+    </div>
+
+</body>
+</html>
