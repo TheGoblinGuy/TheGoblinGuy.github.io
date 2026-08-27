@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>perception · full figure · abstract beauty</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #10131f;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      padding: 1.5rem;
+    }
+    .card {
+      background: #1b1f2e;
+      padding: 1.8rem 1.8rem 2rem;
+      border-radius: 3.2rem;
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(220, 190, 170, 0.06);
+    }
+    canvas {
+      display: block;
+      margin: 0 auto;
+      width: 560px;
+      height: 700px;
+      border-radius: 2.6rem;
+      box-shadow: inset 0 0 0 1px rgba(255, 220, 190, 0.06), 0 16px 32px rgba(0, 0, 0, 0.6);
+      background: #eee3da;
+      cursor: default;
+    }
+    .caption {
+      text-align: center;
+      margin-top: 1.2rem;
+      color: #b3adc0;
+      font-weight: 300;
+      letter-spacing: 0.6px;
+      font-size: 0.95rem;
+      border-top: 1px solid #2f354a;
+      padding-top: 1.2rem;
+    }
+    .caption span {
+      background: #262d40;
+      padding: 0.2rem 1.4rem;
+      border-radius: 30px;
+      color: #d3cdde;
+      font-size: 0.8rem;
+    }
+    @media (max-width: 620px) {
+      .card { padding: 0.8rem; border-radius: 2rem; }
+      canvas { width: 100%; height: auto; aspect-ratio: 560/700; border-radius: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+  <canvas id="beautyCanvas" width="560" height="700"></canvas>
+  <div class="caption"><span>✦  full figure · shape & light  ✦</span></div>
+</div>
+<script>
+  (function drawFullFigure() {
+    const canvas = document.getElementById('beautyCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    // ----  background: warm, soft  ----
+    const bgGrad = ctx.createRadialGradient(280, 300, 80, 280, 400, 480);
+    bgGrad.addColorStop(0, '#efe4da');
+    bgGrad.addColorStop(0.6, '#e0d0c0');
+    bgGrad.addColorStop(1, '#cbb8a6');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, 560, 700);
+
+    // ----  SHADOWS / ground presence  ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(30, 20, 12, 0.2)';
+    ctx.shadowBlur = 40;
+    ctx.shadowOffsetY = 14;
+    ctx.beginPath();
+    ctx.ellipse(280, 680, 140, 32, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(70, 55, 40, 0.15)';
+    ctx.fill();
+    ctx.restore();
+
+    // ----  BODY: TORSO + DRAPE (flowing abstract garment)  ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(20, 12, 6, 0.2)';
+    ctx.shadowBlur = 28;
+    ctx.shadowOffsetY = 12;
+
+    // main torso / dress form
+    ctx.beginPath();
+    ctx.moveTo(190, 340);
+    ctx.quadraticCurveTo(140, 380, 120, 470);
+    ctx.quadraticCurveTo(110, 540, 140, 610);
+    ctx.quadraticCurveTo(180, 650, 280, 660);
+    ctx.quadraticCurveTo(380, 650, 420, 610);
+    ctx.quadraticCurveTo(450, 540, 440, 470);
+    ctx.quadraticCurveTo(420, 380, 370, 340);
+    ctx.quadraticCurveTo(280, 320, 190, 340);
+    ctx.closePath();
+    ctx.fillStyle = '#b59b88';
+    ctx.fill();
+
+    // overlay – soft fabric fold (abstract)
+    ctx.beginPath();
+    ctx.moveTo(200, 370);
+    ctx.quadraticCurveTo(160, 420, 150, 510);
+    ctx.quadraticCurveTo(170, 560, 220, 600);
+    ctx.quadraticCurveTo(280, 620, 340, 600);
+    ctx.quadraticCurveTo(390, 560, 410, 510);
+    ctx.quadraticCurveTo(400, 420, 360, 370);
+    ctx.quadraticCurveTo(280, 350, 200, 370);
+    ctx.fillStyle = '#c9b09b';
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.restore();
+
+    // ----  ARMS (abstract, elegant)  ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(20, 12, 8, 0.25)';
+    ctx.shadowBlur = 22;
+    ctx.shadowOffsetY = 8;
+    // left arm
+    ctx.beginPath();
+    ctx.moveTo(190, 350);
+    ctx.quadraticCurveTo(120, 380, 80, 460);
+    ctx.quadraticCurveTo(60, 510, 80, 540);
+    ctx.quadraticCurveTo(100, 550, 120, 530);
+    ctx.quadraticCurveTo(130, 500, 140, 460);
+    ctx.quadraticCurveTo(150, 410, 190, 370);
+    ctx.fillStyle = '#dac2b0';
+    ctx.fill();
+
+    // right arm
+    ctx.beginPath();
+    ctx.moveTo(370, 350);
+    ctx.quadraticCurveTo(440, 380, 480, 460);
+    ctx.quadraticCurveTo(500, 510, 480, 540);
+    ctx.quadraticCurveTo(460, 550, 440, 530);
+    ctx.quadraticCurveTo(430, 500, 420, 460);
+    ctx.quadraticCurveTo(410, 410, 370, 370);
+    ctx.fillStyle = '#dac2b0';
+    ctx.fill();
+    ctx.restore();
+
+    // ----  NECK  ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(10, 8, 6, 0.2)';
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 4;
+    ctx.beginPath();
+    ctx.ellipse(280, 310, 42, 30, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#dfcbbd';
+    ctx.fill();
+    ctx.restore();
+
+    // ----  HEAD (elegant oval)  ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(20, 12, 6, 0.25)';
+    ctx.shadowBlur = 28;
+    ctx.shadowOffsetY = 10;
+    ctx.beginPath();
+    ctx.ellipse(280, 210, 76, 92, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#eed7c8';
+    ctx.fill();
+    ctx.restore();
+
+    // subtle cheek highlight
+    ctx.save();
+    ctx.globalAlpha = 0.15;
+    ctx.beginPath();
+    ctx.ellipse(240, 190, 28, 32, 0.1, 0, Math.PI * 2);
+    ctx.fillStyle = '#f5e3d6';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(320, 190, 28, 32, -0.1, 0, Math.PI * 2);
+    ctx.fillStyle = '#f5e3d6';
+    ctx.fill();
+    ctx.restore();
+
+    // ----  FLOWING HAIR (graceful, layered)  ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.2)';
+    ctx.shadowBlur = 28;
+    ctx.shadowOffsetY = 8;
+
+    // back layer – deep tones
+    ctx.beginPath();
+    ctx.moveTo(180, 160);
+    ctx.bezierCurveTo(120, 120, 80, 160, 60, 230);
+    ctx.bezierCurveTo(40, 310, 60, 400, 80, 440);
+    ctx.bezierCurveTo(100, 460, 130, 430, 140, 380);
+    ctx.bezierCurveTo(120, 300, 130, 200, 180, 160);
+    ctx.fillStyle = '#3b2c22';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(380, 160);
+    ctx.bezierCurveTo(440, 120, 480, 160, 500, 230);
+    ctx.bezierCurveTo(520, 310, 500, 400, 480, 440);
+    ctx.bezierCurveTo(460, 460, 430, 430, 420, 380);
+    ctx.bezierCurveTo(440, 300, 430, 200, 380, 160);
+    ctx.fillStyle = '#3b2c22';
+    ctx.fill();
+
+    // mid layer – chestnut
+    ctx.beginPath();
+    ctx.moveTo(190, 140);
+    ctx.bezierCurveTo(140, 100, 100, 140, 80, 210);
+    ctx.bezierCurveTo(60, 280, 70, 370, 100, 420);
+    ctx.bezierCurveTo(120, 440, 150, 410, 160, 360);
+    ctx.bezierCurveTo(140, 280, 150, 180, 190, 140);
+    ctx.fillStyle = '#5a4235';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(370, 140);
+    ctx.bezierCurveTo(420, 100, 460, 140, 480, 210);
+    ctx.bezierCurveTo(500, 280, 490, 370, 460, 420);
+    ctx.bezierCurveTo(440, 440, 410, 410, 400, 360);
+    ctx.bezierCurveTo(420, 280, 410, 180, 370, 140);
+    ctx.fillStyle = '#5a4235';
+    ctx.fill();
+
+    // front strands – warm light
+    ctx.beginPath();
+    ctx.moveTo(210, 130);
+    ctx.bezierCurveTo(170, 90, 140, 120, 130, 180);
+    ctx.bezierCurveTo(120, 240, 130, 310, 150, 360);
+    ctx.bezierCurveTo(165, 380, 180, 360, 185, 320);
+    ctx.bezierCurveTo(170, 260, 175, 170, 210, 130);
+    ctx.fillStyle = '#7a5d4a';
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(350, 130);
+    ctx.bezierCurveTo(390, 90, 420, 120, 430, 180);
+    ctx.bezierCurveTo(440, 240, 430, 310, 410, 360);
+    ctx.bezierCurveTo(395, 380, 380, 360, 375, 320);
+    ctx.bezierCurveTo(390, 260, 385, 170, 350, 130);
+    ctx.fillStyle = '#7a5d4a';
+    ctx.fill();
+
+    ctx.restore();
+
+    // ----  EYES (expressive, luminous)  ----
+    // left
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.08)';
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 2;
+    ctx.beginPath();
+    ctx.ellipse(242, 200, 22, 18, -0.05, 0, Math.PI * 2);
+    ctx.fillStyle = '#f8efe8';
+    ctx.fill();
+    ctx.strokeStyle = '#2d231e';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.ellipse(248, 202, 12, 13, 0.02, 0, Math.PI * 2);
+    ctx.fillStyle = '#4f3a2e';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(252, 200, 6, 7, 0.02, 0, Math.PI * 2);
+    ctx.fillStyle = '#1f150e';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(256, 195, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#fcf9f5';
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.restore();
+
+    // right
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.08)';
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 2;
+    ctx.beginPath();
+    ctx.ellipse(318, 200, 22, 18, 0.05, 0, Math.PI * 2);
+    ctx.fillStyle = '#f8efe8';
+    ctx.fill();
+    ctx.strokeStyle = '#2d231e';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.ellipse(312, 202, 12, 13, -0.02, 0, Math.PI * 2);
+    ctx.fillStyle = '#4f3a2e';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.ellipse(308, 200, 6, 7, -0.02, 0, Math.PI * 2);
+    ctx.fillStyle = '#1f150e';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(304, 195, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#fcf9f5';
+    ctx.shadowBlur = 12;
+    ctx.fill();
+    ctx.restore();
+
+    // ----  EYEBROWS (fine, arched)  ----
+    ctx.save();
+    ctx.strokeStyle = '#3d2e23';
+    ctx.lineWidth = 4.5;
+    ctx.lineCap = 'round';
+    ctx.shadowColor = 'rgba(0,0,0,0.06)';
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.moveTo(210, 172);
+    ctx.quadraticCurveTo(242, 156, 272, 174);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(288, 174);
+    ctx.quadraticCurveTo(318, 156, 350, 172);
+    ctx.stroke();
+    ctx.restore();
+
+    // ----  NOSE (soft, refined)  ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(30, 18, 10, 0.1)';
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetY = 2;
+    ctx.beginPath();
+    ctx.moveTo(280, 210);
+    ctx.quadraticCurveTo(268, 248, 256, 266);
+    ctx.quadraticCurveTo(275, 274, 280, 276);
+    ctx.quadraticCurveTo(285, 274, 304, 266);
+    ctx.quadraticCurveTo(292, 248, 280, 210);
+    ctx.fillStyle = '#e5cdbc';
+    ctx.fill();
+    ctx.strokeStyle = '#b0927d';
+    ctx.lineWidth = 1.2;
+    ctx.stroke();
+    ctx.restore();
+
+    // ----  MOUTH (serene, graceful)  ----
+    ctx.save();
+    ctx.shadowColor = 'rgba(40, 20, 10, 0.15)';
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 4;
+    ctx.beginPath();
+    ctx.moveTo(244, 296);
+    ctx.quadraticCurveTo(280, 320, 316, 296);
+    ctx.quadraticCurveTo(280, 328, 244, 296);
+    ctx.fillStyle = '#b5624a';
+    ctx.fill();
+    ctx.strokeStyle = '#8f4535';
+    ctx.lineWidth = 1.6;
+    ctx.stroke();
+
+    // lower lip
+    ctx.beginPath();
+    ctx.moveTo(254, 304);
+    ctx.quadraticCurveTo(280, 324, 306, 304);
+    ctx.strokeStyle = '#a5533e';
+    ctx.lineWidth = 1.8;
+    ctx.stroke();
+    ctx.restore();
+
+    // ----  subtle glow / aura (beauty light)  ----
+    ctx.save();
+    ctx.globalAlpha = 0.08;
+    const glow = ctx.createRadialGradient(280, 260, 40, 280, 300, 360);
+    glow.addColorStop(0, '#ffeedd');
+    glow.addColorStop(1, 'transparent');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, 560, 700);
+    ctx.restore();
+
+    // ----  final soft vignette  ----
+    const vignette = ctx.createRadialGradient(280, 320, 200, 280, 320, 460);
+    vignette.addColorStop(0, 'rgba(0,0,0,0)');
+    vignette.addColorStop(1, 'rgba(20, 14, 10, 0.18)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, 560, 700);
+
+    // ----  signature  ----
+    ctx.fillStyle = '#5a4c40';
+    ctx.globalAlpha = 0.2;
+    ctx.font = '10px "Segoe UI", monospace';
+    ctx.fillText('✦  perception · full figure  ✦', 380, 680);
+    ctx.globalAlpha = 1.0;
+  })();
+</script>
+</body>
+</html>
