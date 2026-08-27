@@ -812,4 +812,69 @@
                 }
                 
                 if (dead || hit) {
-                    com
+                    comets.splice(i, 1);
+                } else {
+                    c.draw();
+                }
+            }
+        }
+        
+        // --- draw trail particles ---
+        for (let i = trailParticles.length - 1; i >= 0; i--) {
+            const p = trailParticles[i];
+            const dead = p.update();
+            if (dead) {
+                trailParticles.splice(i, 1);
+            } else {
+                p.draw();
+            }
+        }
+        
+        // --- draw BIG BRIGHT particles ---
+        for (let i = bigParticles.length - 1; i >= 0; i--) {
+            const p = bigParticles[i];
+            const dead = p.update();
+            if (dead) {
+                bigParticles.splice(i, 1);
+            } else {
+                p.draw();
+            }
+        }
+        
+        // --- subtle mouse glow ---
+        ctx.save();
+        ctx.globalAlpha = 0.015;
+        const mg = ctx.createRadialGradient(mouseX, mouseY, 10, mouseX, mouseY, 100);
+        mg.addColorStop(0, 'rgba(255, 200, 255, 0.2)');
+        mg.addColorStop(1, 'rgba(255, 200, 255, 0)');
+        ctx.fillStyle = mg;
+        ctx.beginPath();
+        ctx.arc(mouseX, mouseY, 100, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+        
+        // --- HUD ---
+        ctx.fillStyle = 'rgba(255,255,255,0.02)';
+        ctx.font = '9px monospace';
+        ctx.fillText(`✦ ${planets.length} planets · ${comets.length} comets · ${trailParticles.length} trail · ${bigParticles.length} big ✦`, 15, 25);
+        ctx.fillText(`drag to spawn · ${Math.round(cometTimer/60)}s to next comet`, 15, 38);
+        
+        frameId = requestAnimationFrame(draw);
+    }
+    
+    draw();
+    
+    // init audio
+    document.addEventListener('click', () => initAudio(), { once: true });
+    document.addEventListener('touchstart', () => initAudio(), { once: true });
+    
+    // cleanup
+    window.addEventListener('beforeunload', () => {
+        if (frameId) cancelAnimationFrame(frameId);
+        if (audioCtx) audioCtx.close();
+    });
+    
+})();
+</script>
+</body>
+</html>
