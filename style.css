@@ -472,3 +472,61 @@ footer {
     opacity: 0.6;
     margin: 0;
 }
+/* ======================================== */
+/* PROJECTS PAGE SPECIFIC STYLES            */
+/* ======================================== */
+
+.projects-intro {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+}
+
+.project-link {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.project-link:hover {
+    color: var(--color-secondary);
+    text-decoration: underline;
+}
+
+.project-image {
+    max-width: 100%;
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+.press-kit-subtitle {
+    margin-top: 20px;
+    color: var(--color-secondary);
+}
+
+.press-details {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 40px;
+}
+
+.press-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.press-note {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.press-note-small {
+    font-size: 0.9rem;
+    opacity: 0.5;
+    margin-top: 5px;
+}
