@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Swatches - Fart Goblin Tech</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #f4f5f7;
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #1e1e2a;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 2.5rem;
+        }
+
+        .scheme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .scheme-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.2s ease;
+        }
+
+        .scheme-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .scheme-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e1e2a;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .swatch-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .swatch {
+            flex: 1;
+            min-width: 50px;
+            height: 70px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            padding: 4px;
+            text-align: center;
+            line-height: 1.3;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .swatch-light {
+            color: #1e1e2a;
+            text-shadow: none;
+        }
+
+        .swatch-hex {
+            font-size: 0.55rem;
+            opacity: 0.85;
+            font-weight: 400;
+        }
+
+        .swatch-label {
+            font-size: 0.55rem;
+            opacity: 0.7;
+            font-weight: 400;
+        }
+
+        .scheme-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            background: #f0f0f0;
+            padding: 2px 10px;
+            border-radius: 12px;
+            color: #555;
+            margin-top: 6px;
+        }
+
+        .vibe {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #999;
+            font-size: 0.85rem;
+        }
+
+        /* Dark background for light swatches */
+        .swatch-dark-bg {
+            border: 1px solid #ddd;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .scheme-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎨 Color Scheme Swatches</h1>
+    <p class="subtitle">10 palettes for FART Goblin Tech — pick the vibe that fits your brand</p>
+
+    <div class="scheme-grid">
+
+        <!-- ============================================================ -->
+        <!-- 1. CURRENT (Modern & Airy) — your existing palette -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">🌿 1. Modern &amp; Airy <span class="scheme-tag">current</span></div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#00b894;">Primary<br><span class="swatch-hex">#00b894</span></div>
+                <div class="swatch" style="background:#6c5ce7;">Secondary<br><span class="swatch-hex">#6c5ce7</span></div>
+                <div class="swatch" style="background:#fd79a8;">Accent<br><span class="swatch-hex">#fd79a8</span></div>
+                <div class="swatch" style="background:#f8f9fa; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f8f9fa</span></div>
+                <div class="swatch" style="background:#2d3436;">Text<br><span class="swatch-hex">#2d3436</span></div>
+            </div>
+            <div class="vibe">🌱 Fresh · Clean · Approachable</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 2. GOBLIN CORE (Earthy & Playful) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">🧌 2. Goblin Core</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#4a7c59;">Primary<br><span class="swatch-hex">#4a7c59</span></div>
+                <div class="swatch" style="background:#8b5e3c;">Secondary<br><span class="swatch-hex">#8b5e3c</span></div>
+                <div class="swatch" style="background:#c87a3a;">Accent<br><span class="swatch-hex">#c87a3a</span></div>
+                <div class="swatch" style="background:#f5ede4; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f5ede4</span></div>
+                <div class="swatch" style="background:#2c2b26;">Text<br><span class="swatch-hex">#2c2b26</span></div>
+            </div>
+            <div class="vibe">🌲 Warm · Organic · Mischievous</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 3. NEO-RETRO (80s Synthwave) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">🌆 3. Neo-Retro</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#ff6b9d;">Primary<br><span class="swatch-hex">#ff6b9d</span></div>
+                <div class="swatch" style="background:#6c5ce7;">Secondary<br><span class="swatch-hex">#6c5ce7</span></div>
+                <div class="swatch" style="background:#00d2d3;">Accent<br><span class="swatch-hex">#00d2d3</span></div>
+                <div class="swatch" style="background:#1a1a2e;">Bg<br><span class="swatch-hex">#1a1a2e</span></div>
+                <div class="swatch" style="background:#eaeaea; color:#1e1e2a; border:1px solid #ddd;">Text<br><span class="swatch-hex">#eaeaea</span></div>
+            </div>
+            <div class="vibe">🌈 Synthwave · Bold · Nostalgic</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 4. SUNSET (Warm & Friendly) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">🌅 4. Sunset</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#e17055;">Primary<br><span class="swatch-hex">#e17055</span></div>
+                <div class="swatch" style="background:#fdcb6e;">Secondary<br><span class="swatch-hex">#fdcb6e</span></div>
+                <div class="swatch" style="background:#00b894;">Accent<br><span class="swatch-hex">#00b894</span></div>
+                <div class="swatch" style="background:#fef9f4; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#fef9f4</span></div>
+                <div class="swatch" style="background:#2d3436;">Text<br><span class="swatch-hex">#2d3436</span></div>
+            </div>
+            <div class="vibe">☀️ Warm · Optimistic · Welcoming</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 5. NIGHT SHIFT (Dark & Moody) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">🌙 5. Night Shift</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#6c5ce7;">Primary<br><span class="swatch-hex">#6c5ce7</span></div>
+                <div class="swatch" style="background:#fd79a8;">Secondary<br><span class="swatch-hex">#fd79a8</span></div>
+                <div class="swatch" style="background:#00cec9;">Accent<br><span class="swatch-hex">#00cec9</span></div>
+                <div class="swatch" style="background:#0a0a12;">Bg<br><span class="swatch-hex">#0a0a12</span></div>
+                <div class="swatch" style="background:#eaeaea; color:#1e1e2a; border:1px solid #ddd;">Text<br><span class="swatch-hex">#eaeaea</span></div>
+            </div>
+            <div class="vibe">🖤 Sleek · Mysterious · Focused</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 6. COASTAL (Cool & Calm) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">🌊 6. Coastal</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#00b4d8;">Primary<br><span class="swatch-hex">#00b4d8</span></div>
+                <div class="swatch" style="background:#90e0ef;">Secondary<br><span class="swatch-hex">#90e0ef</span></div>
+                <div class="swatch" style="background:#f9a826;">Accent<br><span class="swatch-hex">#f9a826</span></div>
+                <div class="swatch" style="background:#f0f8ff; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f0f8ff</span></div>
+                <div class="swatch" style="background:#023047;">Text<br><span class="swatch-hex">#023047</span></div>
+            </div>
+            <div class="vibe">🌊 Calm · Trustworthy · Refreshing</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 7. TOXIC (Neon Green Chaos) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">☢️ 7. Toxic</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#00ff41;">Primary<br><span class="swatch-hex">#00ff41</span></div>
+                <div class="swatch" style="background:#ff0055;">Secondary<br><span class="swatch-hex">#ff0055</span></div>
+                <div class="swatch" style="background:#ffd700;">Accent<br><span class="swatch-hex">#ffd700</span></div>
+                <div class="swatch" style="background:#0a0a0a;">Bg<br><span class="swatch-hex">#0a0a0a</span></div>
+                <div class="swatch" style="background:#e0e0e0; color:#1e1e2a; border:1px solid #ddd;">Text<br><span class="swatch-hex">#e0e0e0</span></div>
+            </div>
+            <div class="vibe">💚 Chaotic · Cyberpunk · Loud</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 8. VINTAGE (Retro Warm) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">📻 8. Vintage</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#b5835a;">Primary<br><span class="swatch-hex">#b5835a</span></div>
+                <div class="swatch" style="background:#d4a373;">Secondary<br><span class="swatch-hex">#d4a373</span></div>
+                <div class="swatch" style="background:#cc8e5a;">Accent<br><span class="swatch-hex">#cc8e5a</span></div>
+                <div class="swatch" style="background:#f8f1e6; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#f8f1e6</span></div>
+                <div class="swatch" style="background:#3d2c1b;">Text<br><span class="swatch-hex">#3d2c1b</span></div>
+            </div>
+            <div class="vibe">🕰️ Nostalgic · Warm · Storybook</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 9. SPACE (Deep & Futuristic) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">🚀 9. Space</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#7b2ffc;">Primary<br><span class="swatch-hex">#7b2ffc</span></div>
+                <div class="swatch" style="background:#00d4ff;">Secondary<br><span class="swatch-hex">#00d4ff</span></div>
+                <div class="swatch" style="background:#ff6b9d;">Accent<br><span class="swatch-hex">#ff6b9d</span></div>
+                <div class="swatch" style="background:#0b0b1a;">Bg<br><span class="swatch-hex">#0b0b1a</span></div>
+                <div class="swatch" style="background:#eaeaea; color:#1e1e2a; border:1px solid #ddd;">Text<br><span class="swatch-hex">#eaeaea</span></div>
+            </div>
+            <div class="vibe">🌌 Futuristic · Mysterious · Expansive</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 10. CANDY (Playful & Bright) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-name">🍬 10. Candy</div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#ff6b9d;">Primary<br><span class="swatch-hex">#ff6b9d</span></div>
+                <div class="swatch" style="background:#f9ca24;">Secondary<br><span class="swatch-hex">#f9ca24</span></div>
+                <div class="swatch" style="background:#00d2d3;">Accent<br><span class="swatch-hex">#00d2d3</span></div>
+                <div class="swatch" style="background:#fef9f4; color:#1e1e2a; border:1px solid #ddd;">Bg<br><span class="swatch-hex">#fef9f4</span></div>
+                <div class="swatch" style="background:#2d3436;">Text<br><span class="swatch-hex">#2d3436</span></div>
+            </div>
+            <div class="vibe">🍭 Playful · Fun · Youthful</div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        💨 FART Goblin Tech — pick your palette, then update your <code>:root</code> variables in style.css
+    </div>
+
+</body>
+</html>
