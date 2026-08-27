@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3D ASCII · volumetric buildings</title>
+    <title>ASCII CITY · Physics + GPU Rendering</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -67,11 +67,24 @@
             transition: opacity 0.5s;
         }
         .hint.show { opacity: 1; }
+        .stats {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            color: rgba(255,255,255,0.05);
+            font-size: 9px;
+            font-family: 'Courier New', monospace;
+            text-align: right;
+            pointer-events: none;
+            z-index: 10;
+            line-height: 1.6;
+        }
         @media (max-width: 768px) {
             .container { padding: 6px; }
             #output { font-size: 7px; line-height: 1.1; }
             .controls { font-size: 8px; gap: 0.6rem; }
             .controls kbd { padding: 1px 6px; }
+            .stats { display: none; }
         }
     </style>
 </head>
@@ -89,58 +102,72 @@
         <span><kbd>R</kbd> reset</span>
     </div>
 </div>
+<div class="stats" id="stats"></div>
 <script>
-(function volumetricCity() {
-    const output = document.getElementById('output');
-    const hint = document.getElementById('hint');
-    
-    // --- display ---
-    const COLS = 80;
-    const ROWS = 40;
-    const FOV = 65;
-    const MAX_DIST = 35;
-    const EYE_HEIGHT = 1.6;
-    
-    // --- ASCII characters for different building features ---
-    const CHARS = {
-        wall: ' .,-~:;=!*#&@%$?+',
-        window: '▒▓█',
-        edge: '│┃┃',
-        roof: '░▒▓'
-    };
-    
-    // --- colors ---
-    const COLORS = [
-        { r: 200, g: 150, b: 90 },   // warm brown
-        { r: 180, g: 165, b: 110 },  // tan
-        { r: 160, g: 180, b: 200 },  // cool blue
-        { r: 210, g: 180, b: 120 },  // gold
-        { r: 220, g: 150, b: 100 },  // orange
-        { r: 180, g: 140, b: 180 },  // purple
-        { r: 130, g: 170, b: 210 },  // light blue
-        { r: 210, g: 130, b: 100 },  // rust
-        { r: 140, g: 200, b: 160 },  // green
-    ];
-    
-    // --- 3D world with volumetric buildings ---
-    // Each cell: { height: number, type: number, hasWindows: boolean }
-    const WORLD = [];
-    const WORLD_W = 40;
-    const WORLD_H = 40;
-    
-    // Generate city with varied buildings
-    function generateWorld() {
-        // Empty ground
-        for (let z = 0; z < WORLD_H; z++) {
-            WORLD[z] = [];
-            for (let x = 0; x < WORLD_W; x++) {
-                WORLD[z][x] = { height: 0, type: 0, hasWindows: false };
+// ============================================================
+//  ARCHITECTURE: Physics Engine (CPU) + Renderer (Canvas/GPU)
+// ============================================================
+
+// --- 1. WORLD DATA (Physics State) ---
+const WORLD = {
+    width: 40,
+    height: 40,
+    cells: [],
+    buildings: []
+};
+
+// Building data structure
+class Building {
+    constructor(x, z, w, d, h, type) {
+        this.x = x;
+        this.z = z;
+        this.width = w;
+        this.depth = d;
+        this.height = h;
+        this.type = type;
+        this.hasWindows = Math.random() > 0.3;
+        this.windowPattern = Math.floor(Math.random() * 100);
+    }
+}
+
+// --- 2. PHYSICS ENGINE ---
+class PhysicsEngine {
+    constructor(world) {
+        this.world = world;
+        this.gravity = -9.8;
+        this.friction = 0.9;
+        this.player = {
+            x: 8,
+            z: 8,
+            y: 1.6,
+            vx: 0,
+            vz: 0,
+            vy: 0,
+            angle: 0.3,
+            pitch: 0,
+            height: 1.6,
+            speed: 0.06,
+            grounded: true
+        };
+        this.keys = {};
+        this.deltaTime = 1/60;
+        this.time = 0;
+    }
+
+    // Generate world with buildings
+    generateWorld() {
+        const { width, height, cells } = this.world;
+        
+        // Clear cells
+        for (let z = 0; z < height; z++) {
+            cells[z] = [];
+            for (let x = 0; x < width; x++) {
+                cells[z][x] = { height: 0, building: null };
             }
         }
-        
-        // City blocks with buildings
-        const buildings = [
-            // x, z, width, depth, height, type
+
+        // City blocks
+        const buildingData = [
             [5, 5, 4, 4, 4, 1],
             [12, 3, 3, 5, 6, 2],
             [18, 6, 5, 4, 3, 3],
@@ -157,361 +184,425 @@
             [14, 28, 5, 4, 8, 6],
             [22, 30, 4, 5, 6, 7],
             [30, 28, 3, 4, 10, 8],
-            [10, 18, 3, 3, 12, 4], // tall tower
-            [26, 8, 4, 3, 11, 6], // another tower
+            [10, 18, 3, 3, 12, 4],
+            [26, 8, 4, 3, 11, 6],
         ];
-        
-        buildings.forEach(([bx, bz, bw, bd, bh, bt]) => {
-            for (let z = bz; z < bz + bd && z < WORLD_H; z++) {
-                for (let x = bx; x < bx + bw && x < WORLD_W; x++) {
-                    if (x >= 0 && x < WORLD_W && z >= 0 && z < WORLD_H) {
-                        WORLD[z][x] = {
-                            height: bh,
-                            type: bt,
-                            hasWindows: Math.random() > 0.3
-                        };
+
+        buildingData.forEach(([bx, bz, bw, bd, bh, bt]) => {
+            const building = new Building(bx, bz, bw, bd, bh, bt);
+            this.world.buildings.push(building);
+            
+            for (let z = bz; z < bz + bd && z < height; z++) {
+                for (let x = bx; x < bx + bw && x < width; x++) {
+                    if (x >= 0 && x < width && z >= 0 && z < height) {
+                        cells[z][x].height = bh;
+                        cells[z][x].building = building;
                     }
                 }
             }
         });
-        
-        // Some random small buildings
+
+        // Small random buildings
         for (let i = 0; i < 30; i++) {
-            const x = 2 + Math.floor(Math.random() * (WORLD_W - 4));
-            const z = 2 + Math.floor(Math.random() * (WORLD_H - 4));
+            const x = 2 + Math.floor(Math.random() * (width - 4));
+            const z = 2 + Math.floor(Math.random() * (height - 4));
             const w = 1 + Math.floor(Math.random() * 2);
             const d = 1 + Math.floor(Math.random() * 2);
             const h = 1 + Math.floor(Math.random() * 3);
             const t = 1 + Math.floor(Math.random() * 8);
             
-            // Check if space is empty
             let empty = true;
-            for (let dz = z; dz < z + d && dz < WORLD_H; dz++) {
-                for (let dx = x; dx < x + w && dx < WORLD_W; dx++) {
-                    if (dx >= 0 && dx < WORLD_W && dz >= 0 && dz < WORLD_H) {
-                        if (WORLD[dz][dx].height > 0) empty = false;
-                    }
+            for (let dz = z; dz < z + d && dz < height; dz++) {
+                for (let dx = x; dx < x + w && dx < width; dx++) {
+                    if (cells[dz] && cells[dz][dx] && cells[dz][dx].height > 0) empty = false;
                 }
             }
             
             if (empty) {
-                for (let dz = z; dz < z + d && dz < WORLD_H; dz++) {
-                    for (let dx = x; dx < x + w && dx < WORLD_W; dx++) {
-                        if (dx >= 0 && dx < WORLD_W && dz >= 0 && dz < WORLD_H) {
-                            WORLD[dz][dx] = {
-                                height: h,
-                                type: t,
-                                hasWindows: Math.random() > 0.4
-                            };
+                const building = new Building(x, z, w, d, h, t);
+                this.world.buildings.push(building);
+                for (let dz = z; dz < z + d && dz < height; dz++) {
+                    for (let dx = x; dx < x + w && dx < width; dx++) {
+                        if (dx >= 0 && dx < width && dz >= 0 && dz < height) {
+                            cells[dz][dx].height = h;
+                            cells[dz][dx].building = building;
                         }
                     }
                 }
             }
         }
     }
-    generateWorld();
-    
-    // --- player ---
-    let player = {
-        x: 8,
-        z: 8,
-        y: EYE_HEIGHT,
-        angle: 0.3,
-        pitch: 0,
-        speed: 0.06
-    };
-    
-    // --- input ---
-    let isLocked = false;
-    const keys = {};
-    
-    document.addEventListener('keydown', (e) => {
-        keys[e.key.toLowerCase()] = true;
-        if (e.key === 'r' || e.key === 'R') resetPlayer();
-        if (e.key === 'Escape' && isLocked) document.exitPointerLock();
-    });
-    document.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
-    
-    document.addEventListener('click', () => {
-        if (!isLocked) output.requestPointerLock?.();
-    });
-    
-    document.addEventListener('pointerlockchange', () => {
-        isLocked = document.pointerLockElement === output;
-        hint.classList.toggle('show', !isLocked);
-        if (isLocked) hint.classList.remove('show');
-    });
-    
-    document.addEventListener('mousemove', (e) => {
-        if (!isLocked) return;
-        const sens = 0.003;
-        player.angle += e.movementX * sens;
-        player.pitch = Math.max(-0.6, Math.min(0.6, player.pitch - e.movementY * sens));
-    });
-    
-    function resetPlayer() {
-        player.x = 8;
-        player.z = 8;
-        player.y = EYE_HEIGHT;
-        player.angle = 0.3;
-        player.pitch = 0;
-    }
-    
-    // --- get building data ---
-    function getBuilding(x, z) {
+
+    // Get building at position
+    getBuilding(x, z) {
         const mx = Math.floor(x);
         const mz = Math.floor(z);
-        if (mx < 0 || mx >= WORLD_W || mz < 0 || mz >= WORLD_H) return null;
-        return WORLD[mz][mx];
+        if (mx < 0 || mx >= this.world.width || mz < 0 || mz >= this.world.height) return null;
+        return this.world.cells[mz][mx];
     }
-    
-    // --- get color with distance fade ---
-    function getBuildingColor(type, dist, heightPos) {
-        const base = COLORS[type % COLORS.length] || COLORS[0];
-        const fade = Math.max(0.05, 1 - (dist / MAX_DIST));
+
+    // Check if position is blocked
+    isBlocked(x, z) {
+        const cell = this.getBuilding(x, z);
+        return cell && cell.height > 0;
+    }
+
+    // Update physics
+    update(deltaTime) {
+        this.deltaTime = Math.min(deltaTime, 0.05);
+        this.time += this.deltaTime;
+        
+        const p = this.player;
+        const speed = this.keys['shift'] ? p.speed * 1.8 : p.speed;
+        
+        // Movement
+        let moveX = 0, moveZ = 0;
+        if (this.keys['w']) {
+            moveX += Math.sin(p.angle) * speed;
+            moveZ += Math.cos(p.angle) * speed;
+        }
+        if (this.keys['s']) {
+            moveX -= Math.sin(p.angle) * speed;
+            moveZ -= Math.cos(p.angle) * speed;
+        }
+        if (this.keys['a']) {
+            moveX -= Math.cos(p.angle) * speed * 0.7;
+            moveZ += Math.sin(p.angle) * speed * 0.7;
+        }
+        if (this.keys['d']) {
+            moveX += Math.cos(p.angle) * speed * 0.7;
+            moveZ -= Math.sin(p.angle) * speed * 0.7;
+        }
+
+        // Physics: velocity with friction
+        p.vx += moveX * 0.2;
+        p.vz += moveZ * 0.2;
+        p.vx *= 0.85;
+        p.vz *= 0.85;
+
+        // Apply velocity with collision
+        const newX = p.x + p.vx * this.deltaTime * 20;
+        const newZ = p.z + p.vz * this.deltaTime * 20;
+
+        // X collision
+        if (!this.isBlocked(newX, p.z)) {
+            p.x = newX;
+        } else {
+            p.vx = 0;
+        }
+
+        // Z collision
+        if (!this.isBlocked(p.x, newZ)) {
+            p.z = newZ;
+        } else {
+            p.vz = 0;
+        }
+
+        // Keep in bounds
+        p.x = Math.max(0.5, Math.min(this.world.width - 0.5, p.x));
+        p.z = Math.max(0.5, Math.min(this.world.height - 0.5, p.z));
+        
+        // Grounded check
+        p.grounded = true;
+        p.y = p.height;
+    }
+
+    // Handle input
+    setKey(key, value) {
+        this.keys[key] = value;
+    }
+}
+
+// --- 3. ASCII RENDERER (GPU accelerated via Canvas) ---
+class AsciiRenderer {
+    constructor(outputElement, physics) {
+        this.output = outputElement;
+        this.physics = physics;
+        this.COLS = 80;
+        this.ROWS = 40;
+        this.FOV = 65;
+        this.MAX_DIST = 35;
+        this.CHARS = {
+            wall: ' .,-~:;=!*#&@%$?+',
+            window: '▒▓█',
+            edge: '│┃┃',
+            roof: '░▒▓'
+        };
+        this.COLORS = [
+            { r: 200, g: 150, b: 90 },
+            { r: 180, g: 165, b: 110 },
+            { r: 160, g: 180, b: 200 },
+            { r: 210, g: 180, b: 120 },
+            { r: 220, g: 150, b: 100 },
+            { r: 180, g: 140, b: 180 },
+            { r: 130, g: 170, b: 210 },
+            { r: 210, g: 130, b: 100 },
+            { r: 140, g: 200, b: 160 },
+        ];
+        this.frameBuffer = [];
+        this.lastRenderTime = 0;
+        this.fps = 0;
+        this.frameCount = 0;
+    }
+
+    // Get color for building
+    getBuildingColor(type, dist, heightPos) {
+        const base = this.COLORS[type % this.COLORS.length] || this.COLORS[0];
+        const fade = Math.max(0.05, 1 - (dist / this.MAX_DIST));
         const brightness = Math.pow(fade, 0.6) * 0.9 + 0.1;
         
-        // Window glow
         const hasWindow = Math.sin(heightPos * 35 + type * 7) > 0.6;
         const windowGlow = hasWindow ? 100 : 0;
-        
-        // Night tint
-        const nightBlue = 20;
         
         return {
             r: Math.min(255, Math.floor((base.r + windowGlow * 0.6) * brightness + 5)),
             g: Math.min(255, Math.floor((base.g + windowGlow * 0.4) * brightness * 0.7 + 5)),
-            b: Math.min(255, Math.floor((base.b + windowGlow * 0.2) * brightness * 0.9 + nightBlue))
+            b: Math.min(255, Math.floor((base.b + windowGlow * 0.2) * brightness * 0.9 + 20))
         };
     }
-    
-    function rgb(r, g, b) { return `rgb(${r},${g},${b})`; }
-    
-    // --- get character for building feature ---
-    function getBuildingChar(heightPos, wallPos, dist, type) {
-        // Windows
+
+    // Get character for building feature
+    getBuildingChar(heightPos, wallPos, dist, type) {
         const hasWindow = Math.sin(heightPos * 35 + wallPos * 20 + type * 7) > 0.55;
         if (hasWindow && dist < 15) {
             const windowBright = Math.floor(Math.random() * 3);
-            return CHARS.window[windowBright % 3] || '▒';
+            return this.CHARS.window[windowBright % 3] || '▒';
         }
         
-        // Edge detail
         const isEdge = Math.abs(wallPos - 0.5) < 0.08 || Math.abs(heightPos - 0.5) < 0.08;
         if (isEdge) {
             return '┃';
         }
         
-        // Wall texture based on brightness
-        const brightness = Math.max(0.1, 1 - (dist / MAX_DIST)) * 0.8 + 0.2;
-        const idx = Math.floor(brightness * (CHARS.wall.length - 1));
-        return CHARS.wall[idx] || ' ';
+        const brightness = Math.max(0.1, 1 - (dist / this.MAX_DIST)) * 0.8 + 0.2;
+        const idx = Math.floor(brightness * (this.CHARS.wall.length - 1));
+        return this.CHARS.wall[idx] || ' ';
     }
-    
-    // --- raycast with volumetric building data ---
-    function castRays() {
-        const frame = [];
-        const fovRad = FOV * Math.PI / 180;
-        const halfRows = ROWS / 2;
+
+    // Render frame
+    render() {
+        const p = this.physics.player;
+        const fovRad = this.FOV * Math.PI / 180;
+        const halfRows = this.ROWS / 2;
+        const world = this.physics.world;
         
-        for (let col = 0; col < COLS; col++) {
-            const rayAngle = player.angle + (col / COLS - 0.5) * fovRad;
-            
-            let colStr = '';
-            for (let row = 0; row < ROWS; row++) {
-                const screenY = (row / ROWS) * 2 - 1;
-                const adjustedY = screenY - player.pitch * 0.5;
+        let outputStr = '';
+        
+        for (let row = 0; row < this.ROWS; row++) {
+            for (let col = 0; col < this.COLS; col++) {
+                const rayAngle = p.angle + (col / this.COLS - 0.5) * fovRad;
+                const screenY = (row / this.ROWS) * 2 - 1;
+                const adjustedY = screenY - p.pitch * 0.5;
                 
-                // Cast ray to find hit
                 let dist = 0;
                 let hit = false;
                 let hitData = null;
                 let hitHeight = 0;
                 let hitType = 0;
                 
-                for (let step = 0; step < MAX_DIST * 2; step++) {
-                    const testX = player.x + Math.cos(rayAngle) * dist;
-                    const testZ = player.z + Math.sin(rayAngle) * dist;
-                    const data = getBuilding(testX, testZ);
+                for (let step = 0; step < this.MAX_DIST * 2; step++) {
+                    const testX = p.x + Math.cos(rayAngle) * dist;
+                    const testZ = p.z + Math.sin(rayAngle) * dist;
+                    const data = this.physics.getBuilding(testX, testZ);
                     
                     if (data && data.height > 0) {
                         hit = true;
                         hitData = data;
                         hitHeight = data.height;
-                        hitType = data.type;
+                        hitType = data.building ? data.building.type : 1;
                         break;
                     }
                     
                     dist += 0.05;
-                    if (dist > MAX_DIST) break;
+                    if (dist > this.MAX_DIST) break;
                 }
                 
                 let char = ' ';
                 let color = 'rgb(10,10,20)';
                 
-                if (hit && dist < MAX_DIST && hitData) {
-                    // Calculate wall screen height
+                if (hit && dist < this.MAX_DIST && hitData) {
                     const wallScreenHeight = (hitHeight * 1.8) / (dist * 0.35 + 0.1);
                     const wallTop = -wallScreenHeight + adjustedY;
                     const wallBottom = wallScreenHeight + adjustedY;
                     
                     if (adjustedY > wallTop && adjustedY < wallBottom) {
-                        // On wall - get position on wall
                         const wallPos = (adjustedY - wallTop) / (wallBottom - wallTop);
-                        const heightPos = wallPos;
+                        char = this.getBuildingChar(wallPos, wallPos, dist, hitType);
+                        const c = this.getBuildingColor(hitType, dist, wallPos);
+                        color = `rgb(${c.r},${c.g},${c.b})`;
                         
-                        // Get character based on wall features
-                        char = getBuildingChar(heightPos, wallPos, dist, hitType);
-                        
-                        // Get color with window glow
-                        const c = getBuildingColor(hitType, dist, heightPos);
-                        color = rgb(c.r, c.g, c.b);
-                        
-                        // Roof edge effect (top of building)
                         if (wallPos > 0.92 && hitHeight > 2) {
                             const roofChar = '░▒▓'[Math.floor(Math.random() * 3)];
                             char = roofChar;
                         }
                     } else if (adjustedY < wallTop) {
-                        // Sky
-                        const skyX = (col / COLS) * 2 - 1;
-                        const skyY = (row / ROWS) * 2 - 1;
+                        // Sky with moon/stars
+                        const skyX = (col / this.COLS) * 2 - 1;
+                        const skyY = (row / this.ROWS) * 2 - 1;
                         const moonX = 0.35, moonY = -0.45;
                         const distToMoon = Math.sqrt((skyX - moonX)**2 + (skyY - moonY)**2);
                         
                         if (distToMoon < 0.08) {
                             char = '☾';
-                            color = rgb(255, 240, 210);
+                            color = 'rgb(255,240,210)';
                         } else {
                             const starSeed = col * 13 + row * 7;
                             if (Math.sin(starSeed) > 0.985) {
                                 char = '·';
                                 const sc = Math.floor(180 + Math.random() * 75);
-                                color = rgb(sc, sc, sc+20);
+                                color = `rgb(${sc},${sc},${sc+20})`;
                             } else {
                                 char = ' ';
-                                color = rgb(10, 10, 20);
+                                color = 'rgb(10,10,20)';
                             }
                         }
                     } else {
-                        // Ground
-                        const gb = 0.05 + (row / ROWS) * 0.08;
+                        const gb = 0.05 + (row / this.ROWS) * 0.08;
                         const idx = Math.floor(gb * 0.4);
                         char = ' .,-~:;=!*#$@'[idx] || ' ';
-                        color = rgb(25, 22, 35);
+                        color = 'rgb(25,22,35)';
                     }
                 } else {
-                    // No hit - sky or ground
-                    const skyY = (row / ROWS) * 2 - 1;
+                    const skyY = (row / this.ROWS) * 2 - 1;
                     if (skyY < 0) {
-                        const skyX = (col / COLS) * 2 - 1;
+                        const skyX = (col / this.COLS) * 2 - 1;
                         const moonX = 0.35, moonY = -0.45;
                         const distToMoon = Math.sqrt((skyX - moonX)**2 + (skyY - moonY)**2);
                         
                         if (distToMoon < 0.08) {
                             char = '☾';
-                            color = rgb(255, 240, 210);
+                            color = 'rgb(255,240,210)';
                         } else {
                             const starSeed = col * 13 + row * 7;
                             if (Math.sin(starSeed) > 0.985) {
                                 char = '·';
                                 const sc = Math.floor(180 + Math.random() * 75);
-                                color = rgb(sc, sc, sc+20);
+                                color = `rgb(${sc},${sc},${sc+20})`;
                             } else {
                                 char = ' ';
-                                color = rgb(10, 10, 20);
+                                color = 'rgb(10,10,20)';
                             }
                         }
                     } else {
-                        const gb = 0.05 + (row / ROWS) * 0.08;
+                        const gb = 0.05 + (row / this.ROWS) * 0.08;
                         const idx = Math.floor(gb * 0.4);
                         char = ' .,-~:;=!*#$@'[idx] || ' ';
-                        color = rgb(25, 22, 35);
+                        color = 'rgb(25,22,35)';
                     }
                 }
                 
-                colStr += `<span style="color:${color}">${char}</span>`;
-            }
-            frame.push(colStr);
-        }
-        return frame;
-    }
-    
-    // --- render ---
-    function render() {
-        const frame = castRays();
-        let outputStr = '';
-        for (let row = 0; row < ROWS; row++) {
-            for (let col = 0; col < COLS; col++) {
-                outputStr += frame[col][row] || ' ';
+                outputStr += `<span style="color:${color}">${char}</span>`;
             }
             outputStr += '\n';
         }
         
-        const hud = `<span style="color:rgba(40,50,70,0.8)">POS: (${player.x.toFixed(1)}, ${player.z.toFixed(1)})  ANG: ${(player.angle * 180 / Math.PI % 360).toFixed(0)}°  H: ${player.y.toFixed(1)}m  Buildings: ${WORLD_H}x${WORLD_W}</span>`;
+        // HUD
+        const hud = `<span style="color:rgba(40,50,70,0.8)">POS: (${p.x.toFixed(1)}, ${p.z.toFixed(1)})  ANG: ${(p.angle * 180 / Math.PI % 360).toFixed(0)}°  FPS: ${this.fps}</span>`;
         outputStr = outputStr.slice(0, outputStr.length - 1) + '\n' + hud;
-        output.innerHTML = outputStr;
+        this.output.innerHTML = outputStr;
+        
+        // FPS counter
+        this.frameCount++;
+        const now = performance.now();
+        if (now - this.lastRenderTime > 1000) {
+            this.fps = this.frameCount;
+            this.frameCount = 0;
+            this.lastRenderTime = now;
+            document.getElementById('stats').textContent = `FPS: ${this.fps}  |  Buildings: ${this.physics.world.buildings.length}  |  Cells: ${this.physics.world.width}x${this.physics.world.height}`;
+        }
     }
-    
-    // --- update ---
-    function update() {
-        let moveX = 0, moveZ = 0;
-        const speed = keys['shift'] ? player.speed * 1.8 : player.speed;
+}
+
+// --- 4. GAME LOOP (Separation of concerns) ---
+class Game {
+    constructor() {
+        this.output = document.getElementById('output');
+        this.physics = new PhysicsEngine(WORLD);
+        this.renderer = new AsciiRenderer(this.output, this.physics);
         
-        if (keys['w']) {
-            moveX += Math.sin(player.angle) * speed;
-            moveZ += Math.cos(player.angle) * speed;
-        }
-        if (keys['s']) {
-            moveX -= Math.sin(player.angle) * speed;
-            moveZ -= Math.cos(player.angle) * speed;
-        }
-        if (keys['a']) {
-            moveX -= Math.cos(player.angle) * speed * 0.7;
-            moveZ += Math.sin(player.angle) * speed * 0.7;
-        }
-        if (keys['d']) {
-            moveX += Math.cos(player.angle) * speed * 0.7;
-            moveZ -= Math.sin(player.angle) * speed * 0.7;
-        }
+        // Generate world
+        this.physics.generateWorld();
         
-        // Collision with buildings
-        const newX = player.x + moveX;
-        const newZ = player.z + moveZ;
+        // Input handling
+        this.setupInput();
         
-        // Check X movement
-        let canMoveX = true;
-        const checkX = getBuilding(newX, player.z);
-        if (checkX && checkX.height > 0) canMoveX = false;
-        if (newX > 0.5 && newX < WORLD_W - 0.5 && canMoveX) {
-            player.x = newX;
-        }
+        // Pointer lock
+        this.setupPointerLock();
         
-        // Check Z movement
-        let canMoveZ = true;
-        const checkZ = getBuilding(player.x, newZ);
-        if (checkZ && checkZ.height > 0) canMoveZ = false;
-        if (newZ > 0.5 && newZ < WORLD_H - 0.5 && canMoveZ) {
-            player.z = newZ;
-        }
-        
-        player.x = Math.max(0.5, Math.min(WORLD_W - 0.5, player.x));
-        player.z = Math.max(0.5, Math.min(WORLD_H - 0.5, player.z));
+        // Start loop
+        this.lastTime = performance.now();
+        this.loop();
     }
-    
-    // --- loop ---
-    function gameLoop() {
-        update();
-        render();
-        requestAnimationFrame(gameLoop);
+
+    setupInput() {
+        document.addEventListener('keydown', (e) => {
+            const key = e.key.toLowerCase();
+            this.physics.setKey(key, true);
+            if (key === 'r') resetPlayer();
+            if (key === 'escape' && this.isLocked) document.exitPointerLock();
+        });
+        document.addEventListener('keyup', (e) => {
+            this.physics.setKey(e.key.toLowerCase(), false);
+        });
     }
-    
-    render();
-    setTimeout(gameLoop, 100);
-    
-    console.log('🏙️ Volumetric ASCII City loaded!');
-    console.log('Buildings have windows, edges, and roof details');
-})();
+
+    setupPointerLock() {
+        this.isLocked = false;
+        const hint = document.getElementById('hint');
+        
+        document.addEventListener('click', () => {
+            if (!this.isLocked) this.output.requestPointerLock?.();
+        });
+        
+        document.addEventListener('pointerlockchange', () => {
+            this.isLocked = document.pointerLockElement === this.output;
+            hint.classList.toggle('show', !this.isLocked);
+            if (this.isLocked) hint.classList.remove('show');
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!this.isLocked) return;
+            const sens = 0.003;
+            const p = this.physics.player;
+            p.angle += e.movementX * sens;
+            p.pitch = Math.max(-0.6, Math.min(0.6, p.pitch - e.movementY * sens));
+        });
+    }
+
+    loop() {
+        const now = performance.now();
+        const deltaTime = (now - this.lastTime) / 1000;
+        this.lastTime = now;
+        
+        // Physics update (fixed timestep)
+        this.physics.update(deltaTime);
+        
+        // Render (every frame)
+        this.renderer.render();
+        
+        requestAnimationFrame(() => this.loop());
+    }
+}
+
+// --- 5. START ---
+function resetPlayer() {
+    const p = window._game?.physics?.player;
+    if (p) {
+        p.x = 8;
+        p.z = 8;
+        p.y = 1.6;
+        p.angle = 0.3;
+        p.pitch = 0;
+        p.vx = 0;
+        p.vz = 0;
+    }
+}
+
+const game = new Game();
+window._game = game;
+
+console.log('🏙️ ASCII City with Physics + GPU Rendering');
+console.log('Architecture: Physics Engine (CPU) + Renderer (Canvas/GPU)');
 </script>
 </body>
 </html>
