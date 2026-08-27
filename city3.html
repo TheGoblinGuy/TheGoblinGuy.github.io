@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3D ASCII CITY · colors working</title>
+    <title>3D ASCII · volumetric buildings</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -20,8 +20,6 @@
             padding: 12px;
             border-radius: 12px;
             border: 1px solid rgba(255,255,255,0.02);
-            max-width: 100vw;
-            overflow: hidden;
         }
         #output {
             margin: 0;
@@ -33,13 +31,9 @@
             overflow: hidden;
             white-space: pre-wrap;
             word-wrap: break-word;
-            letter-spacing: 0.3px;
             font-family: 'Courier New', monospace;
-            color: #fff;
         }
-        #output span {
-            display: inline;
-        }
+        #output span { display: inline; }
         .controls {
             display: flex;
             justify-content: center;
@@ -88,100 +82,142 @@
     <div class="controls">
         <span><kbd>W</kbd> fwd</span>
         <span><kbd>S</kbd> back</span>
-        <span><kbd>A</kbd> <kbd>D</kbd> strafe</span>
+        <span><kbd>A</kbd> left</span>
+        <span><kbd>D</kbd> right</span>
         <span><kbd>🖱️</kbd> look</span>
         <span><kbd>Shift</kbd> sprint</span>
         <span><kbd>R</kbd> reset</span>
     </div>
 </div>
 <script>
-(function asciiCity3D() {
+(function volumetricCity() {
     const output = document.getElementById('output');
     const hint = document.getElementById('hint');
     
-    // --- settings ---
+    // --- display ---
     const COLS = 80;
     const ROWS = 40;
-    const FOV = 70;
-    const MAX_DEPTH = 35;
-    const EYE_HEIGHT = 1.7;
+    const FOV = 65;
+    const MAX_DIST = 35;
+    const EYE_HEIGHT = 1.6;
     
-    // Character set for brightness
-    const CHARS = ' .,-~:;=!*#&@%$?+';
-    
-    // --- rich color palette (warm nighttime colors) ---
-    const PALETTE = {
-        building: [
-            { r: 200, g: 140, b: 90 },   // warm brown
-            { r: 180, g: 160, b: 110 },  // tan
-            { r: 160, g: 180, b: 200 },  // cool blue
-            { r: 200, g: 180, b: 130 },  // gold
-            { r: 220, g: 160, b: 110 },  // orange
-            { r: 180, g: 140, b: 180 },  // purple
-            { r: 120, g: 160, b: 200 },  // blue
-            { r: 200, g: 120, b: 90 },   // rust
-            { r: 140, g: 200, b: 160 },  // green
-        ],
-        window: { r: 255, g: 210, b: 160 },
-        moon: { r: 255, g: 245, b: 220 },
-        star: { r: 200, g: 200, b: 220 }
+    // --- ASCII characters for different building features ---
+    const CHARS = {
+        wall: ' .,-~:;=!*#&@%$?+',
+        window: '▒▓█',
+        edge: '│┃┃',
+        roof: '░▒▓'
     };
     
-    // --- 3D world map ---
-    const WORLD = [
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,2,2,0,0,0,3,3,3,0,0,0,0,0,2,2,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,2,4,0,0,0,3,5,3,0,0,0,0,0,2,2,0,0,0,0,0,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,2,2,0,0,0,3,3,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,6,6,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,6,7,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,6,6,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-        [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    // --- colors ---
+    const COLORS = [
+        { r: 200, g: 150, b: 90 },   // warm brown
+        { r: 180, g: 165, b: 110 },  // tan
+        { r: 160, g: 180, b: 200 },  // cool blue
+        { r: 210, g: 180, b: 120 },  // gold
+        { r: 220, g: 150, b: 100 },  // orange
+        { r: 180, g: 140, b: 180 },  // purple
+        { r: 130, g: 170, b: 210 },  // light blue
+        { r: 210, g: 130, b: 100 },  // rust
+        { r: 140, g: 200, b: 160 },  // green
     ];
     
-    const MAP_W = WORLD[0].length;
-    const MAP_H = WORLD.length;
+    // --- 3D world with volumetric buildings ---
+    // Each cell: { height: number, type: number, hasWindows: boolean }
+    const WORLD = [];
+    const WORLD_W = 40;
+    const WORLD_H = 40;
+    
+    // Generate city with varied buildings
+    function generateWorld() {
+        // Empty ground
+        for (let z = 0; z < WORLD_H; z++) {
+            WORLD[z] = [];
+            for (let x = 0; x < WORLD_W; x++) {
+                WORLD[z][x] = { height: 0, type: 0, hasWindows: false };
+            }
+        }
+        
+        // City blocks with buildings
+        const buildings = [
+            // x, z, width, depth, height, type
+            [5, 5, 4, 4, 4, 1],
+            [12, 3, 3, 5, 6, 2],
+            [18, 6, 5, 4, 3, 3],
+            [25, 4, 3, 3, 8, 4],
+            [5, 12, 5, 3, 5, 5],
+            [14, 14, 4, 4, 7, 6],
+            [22, 12, 4, 5, 4, 7],
+            [28, 15, 3, 4, 9, 8],
+            [8, 22, 6, 3, 3, 1],
+            [16, 20, 4, 6, 6, 2],
+            [24, 22, 5, 4, 5, 3],
+            [30, 20, 4, 4, 7, 4],
+            [6, 30, 4, 5, 4, 5],
+            [14, 28, 5, 4, 8, 6],
+            [22, 30, 4, 5, 6, 7],
+            [30, 28, 3, 4, 10, 8],
+            [10, 18, 3, 3, 12, 4], // tall tower
+            [26, 8, 4, 3, 11, 6], // another tower
+        ];
+        
+        buildings.forEach(([bx, bz, bw, bd, bh, bt]) => {
+            for (let z = bz; z < bz + bd && z < WORLD_H; z++) {
+                for (let x = bx; x < bx + bw && x < WORLD_W; x++) {
+                    if (x >= 0 && x < WORLD_W && z >= 0 && z < WORLD_H) {
+                        WORLD[z][x] = {
+                            height: bh,
+                            type: bt,
+                            hasWindows: Math.random() > 0.3
+                        };
+                    }
+                }
+            }
+        });
+        
+        // Some random small buildings
+        for (let i = 0; i < 30; i++) {
+            const x = 2 + Math.floor(Math.random() * (WORLD_W - 4));
+            const z = 2 + Math.floor(Math.random() * (WORLD_H - 4));
+            const w = 1 + Math.floor(Math.random() * 2);
+            const d = 1 + Math.floor(Math.random() * 2);
+            const h = 1 + Math.floor(Math.random() * 3);
+            const t = 1 + Math.floor(Math.random() * 8);
+            
+            // Check if space is empty
+            let empty = true;
+            for (let dz = z; dz < z + d && dz < WORLD_H; dz++) {
+                for (let dx = x; dx < x + w && dx < WORLD_W; dx++) {
+                    if (dx >= 0 && dx < WORLD_W && dz >= 0 && dz < WORLD_H) {
+                        if (WORLD[dz][dx].height > 0) empty = false;
+                    }
+                }
+            }
+            
+            if (empty) {
+                for (let dz = z; dz < z + d && dz < WORLD_H; dz++) {
+                    for (let dx = x; dx < x + w && dx < WORLD_W; dx++) {
+                        if (dx >= 0 && dx < WORLD_W && dz >= 0 && dz < WORLD_H) {
+                            WORLD[dz][dx] = {
+                                height: h,
+                                type: t,
+                                hasWindows: Math.random() > 0.4
+                            };
+                        }
+                    }
+                }
+            }
+        }
+    }
+    generateWorld();
     
     // --- player ---
     let player = {
-        x: 15.5,
-        y: 15.5,
+        x: 8,
+        z: 8,
+        y: EYE_HEIGHT,
         angle: 0.3,
         pitch: 0,
-        height: EYE_HEIGHT,
-        fov: FOV,
         speed: 0.06
     };
     
@@ -208,148 +244,193 @@
     
     document.addEventListener('mousemove', (e) => {
         if (!isLocked) return;
-        const sens = 0.002;
+        const sens = 0.003;
         player.angle += e.movementX * sens;
-        player.pitch = Math.max(-0.8, Math.min(0.8, player.pitch - e.movementY * sens));
+        player.pitch = Math.max(-0.6, Math.min(0.6, player.pitch - e.movementY * sens));
     });
     
     function resetPlayer() {
-        player.x = 15.5;
-        player.y = 15.5;
+        player.x = 8;
+        player.z = 8;
+        player.y = EYE_HEIGHT;
         player.angle = 0.3;
         player.pitch = 0;
     }
     
-    // --- color helpers ---
-    function getBuildingColor(type, dist, height) {
-        const base = PALETTE.building[type % PALETTE.building.length] || PALETTE.building[0];
-        const fade = Math.max(0.1, 1 - (dist / MAX_DEPTH));
-        const brightness = Math.pow(fade, 0.5) * 0.8 + 0.2;
+    // --- get building data ---
+    function getBuilding(x, z) {
+        const mx = Math.floor(x);
+        const mz = Math.floor(z);
+        if (mx < 0 || mx >= WORLD_W || mz < 0 || mz >= WORLD_H) return null;
+        return WORLD[mz][mx];
+    }
+    
+    // --- get color with distance fade ---
+    function getBuildingColor(type, dist, heightPos) {
+        const base = COLORS[type % COLORS.length] || COLORS[0];
+        const fade = Math.max(0.05, 1 - (dist / MAX_DIST));
+        const brightness = Math.pow(fade, 0.6) * 0.9 + 0.1;
         
-        const hasWindow = Math.sin(height * 25 + type * 7) > 0.65;
-        const windowGlow = hasWindow ? 80 : 0;
+        // Window glow
+        const hasWindow = Math.sin(heightPos * 35 + type * 7) > 0.6;
+        const windowGlow = hasWindow ? 100 : 0;
+        
+        // Night tint
+        const nightBlue = 20;
         
         return {
-            r: Math.min(255, Math.floor((base.r + windowGlow) * brightness)),
-            g: Math.min(255, Math.floor((base.g + windowGlow * 0.5) * brightness * 0.7)),
-            b: Math.min(255, Math.floor((base.b + windowGlow * 0.3) * brightness * 0.9 + 20))
+            r: Math.min(255, Math.floor((base.r + windowGlow * 0.6) * brightness + 5)),
+            g: Math.min(255, Math.floor((base.g + windowGlow * 0.4) * brightness * 0.7 + 5)),
+            b: Math.min(255, Math.floor((base.b + windowGlow * 0.2) * brightness * 0.9 + nightBlue))
         };
     }
     
-    function rgbToStyle(r, g, b) {
-        return `rgb(${r},${g},${b})`;
+    function rgb(r, g, b) { return `rgb(${r},${g},${b})`; }
+    
+    // --- get character for building feature ---
+    function getBuildingChar(heightPos, wallPos, dist, type) {
+        // Windows
+        const hasWindow = Math.sin(heightPos * 35 + wallPos * 20 + type * 7) > 0.55;
+        if (hasWindow && dist < 15) {
+            const windowBright = Math.floor(Math.random() * 3);
+            return CHARS.window[windowBright % 3] || '▒';
+        }
+        
+        // Edge detail
+        const isEdge = Math.abs(wallPos - 0.5) < 0.08 || Math.abs(heightPos - 0.5) < 0.08;
+        if (isEdge) {
+            return '┃';
+        }
+        
+        // Wall texture based on brightness
+        const brightness = Math.max(0.1, 1 - (dist / MAX_DIST)) * 0.8 + 0.2;
+        const idx = Math.floor(brightness * (CHARS.wall.length - 1));
+        return CHARS.wall[idx] || ' ';
     }
     
-    // --- raycasting ---
+    // --- raycast with volumetric building data ---
     function castRays() {
         const frame = [];
+        const fovRad = FOV * Math.PI / 180;
         const halfRows = ROWS / 2;
         
         for (let col = 0; col < COLS; col++) {
-            const rayAngle = player.angle + (col / COLS - 0.5) * (player.fov * Math.PI / 180);
-            
-            let dist = 0;
-            let hit = false;
-            let wallType = 0;
-            let wallHeight = 1;
-            
-            for (let step = 0; step < MAX_DEPTH * 3; step++) {
-                const testX = player.x + Math.cos(rayAngle) * dist;
-                const testY = player.y + Math.sin(rayAngle) * dist;
-                const mapX = Math.floor(testX);
-                const mapY = Math.floor(testY);
-                
-                if (mapX < 0 || mapX >= MAP_W || mapY < 0 || mapY >= MAP_H) {
-                    hit = true;
-                    wallType = 1;
-                    break;
-                }
-                
-                if (WORLD[mapY][mapX] > 0) {
-                    hit = true;
-                    wallType = WORLD[mapY][mapX];
-                    wallHeight = Math.min(wallType, 5);
-                    break;
-                }
-                
-                dist += 0.05;
-                if (dist > MAX_DEPTH) break;
-            }
+            const rayAngle = player.angle + (col / COLS - 0.5) * fovRad;
             
             let colStr = '';
             for (let row = 0; row < ROWS; row++) {
                 const screenY = (row / ROWS) * 2 - 1;
                 const adjustedY = screenY - player.pitch * 0.5;
                 
-                if (hit && dist < MAX_DEPTH) {
-                    const wallScreenHeight = (wallHeight * 2) / (dist * 0.3 + 0.1);
+                // Cast ray to find hit
+                let dist = 0;
+                let hit = false;
+                let hitData = null;
+                let hitHeight = 0;
+                let hitType = 0;
+                
+                for (let step = 0; step < MAX_DIST * 2; step++) {
+                    const testX = player.x + Math.cos(rayAngle) * dist;
+                    const testZ = player.z + Math.sin(rayAngle) * dist;
+                    const data = getBuilding(testX, testZ);
+                    
+                    if (data && data.height > 0) {
+                        hit = true;
+                        hitData = data;
+                        hitHeight = data.height;
+                        hitType = data.type;
+                        break;
+                    }
+                    
+                    dist += 0.05;
+                    if (dist > MAX_DIST) break;
+                }
+                
+                let char = ' ';
+                let color = 'rgb(10,10,20)';
+                
+                if (hit && dist < MAX_DIST && hitData) {
+                    // Calculate wall screen height
+                    const wallScreenHeight = (hitHeight * 1.8) / (dist * 0.35 + 0.1);
                     const wallTop = -wallScreenHeight + adjustedY;
                     const wallBottom = wallScreenHeight + adjustedY;
                     
                     if (adjustedY > wallTop && adjustedY < wallBottom) {
+                        // On wall - get position on wall
                         const wallPos = (adjustedY - wallTop) / (wallBottom - wallTop);
-                        const distFactor = Math.max(0, 1 - (dist / MAX_DEPTH));
-                        const brightness = distFactor * 0.8 + 0.2;
-                        const texture = Math.sin(wallPos * 25 + col * 0.7 + wallType * 3) * 0.2 + 0.8;
-                        const finalBright = Math.min(1, brightness * texture);
-                        const charIndex = Math.floor(finalBright * (CHARS.length - 1));
-                        const char = CHARS[charIndex] || ' ';
+                        const heightPos = wallPos;
                         
-                        const color = getBuildingColor(wallType, dist, wallPos);
-                        colStr += `<span style="color:${rgbToStyle(color.r, color.g, color.b)}">${char}</span>`;
+                        // Get character based on wall features
+                        char = getBuildingChar(heightPos, wallPos, dist, hitType);
+                        
+                        // Get color with window glow
+                        const c = getBuildingColor(hitType, dist, heightPos);
+                        color = rgb(c.r, c.g, c.b);
+                        
+                        // Roof edge effect (top of building)
+                        if (wallPos > 0.92 && hitHeight > 2) {
+                            const roofChar = '░▒▓'[Math.floor(Math.random() * 3)];
+                            char = roofChar;
+                        }
                     } else if (adjustedY < wallTop) {
-                        // Sky - moon and stars
-                        const skyY = (row / ROWS) * 2 - 1;
+                        // Sky
                         const skyX = (col / COLS) * 2 - 1;
-                        const moonX = 0.3, moonY = -0.6;
+                        const skyY = (row / ROWS) * 2 - 1;
+                        const moonX = 0.35, moonY = -0.45;
                         const distToMoon = Math.sqrt((skyX - moonX)**2 + (skyY - moonY)**2);
                         
-                        if (distToMoon < 0.1) {
-                            colStr += `<span style="color:${rgbToStyle(255, 240, 210)}">☾</span>`;
+                        if (distToMoon < 0.08) {
+                            char = '☾';
+                            color = rgb(255, 240, 210);
                         } else {
                             const starSeed = col * 13 + row * 7;
-                            const isStar = Math.sin(starSeed) > 0.985;
-                            if (isStar) {
+                            if (Math.sin(starSeed) > 0.985) {
+                                char = '·';
                                 const sc = Math.floor(180 + Math.random() * 75);
-                                colStr += `<span style="color:${rgbToStyle(sc, sc, sc+20)}">·</span>`;
+                                color = rgb(sc, sc, sc+20);
                             } else {
-                                colStr += ' ';
+                                char = ' ';
+                                color = rgb(10, 10, 20);
                             }
                         }
                     } else {
                         // Ground
-                        const gb = 0.05 + (row / ROWS) * 0.1;
+                        const gb = 0.05 + (row / ROWS) * 0.08;
                         const idx = Math.floor(gb * 0.4);
-                        const char = ' .,-~:;=!*#$@'[idx] || ' ';
-                        colStr += `<span style="color:rgb(30,25,40)">${char}</span>`;
+                        char = ' .,-~:;=!*#$@'[idx] || ' ';
+                        color = rgb(25, 22, 35);
                     }
                 } else {
                     // No hit - sky or ground
                     const skyY = (row / ROWS) * 2 - 1;
                     if (skyY < 0) {
                         const skyX = (col / COLS) * 2 - 1;
-                        const moonX = 0.3, moonY = -0.6;
+                        const moonX = 0.35, moonY = -0.45;
                         const distToMoon = Math.sqrt((skyX - moonX)**2 + (skyY - moonY)**2);
                         
-                        if (distToMoon < 0.1) {
-                            colStr += `<span style="color:${rgbToStyle(255, 240, 210)}">☾</span>`;
+                        if (distToMoon < 0.08) {
+                            char = '☾';
+                            color = rgb(255, 240, 210);
                         } else {
                             const starSeed = col * 13 + row * 7;
-                            const isStar = Math.sin(starSeed) > 0.985;
-                            if (isStar) {
+                            if (Math.sin(starSeed) > 0.985) {
+                                char = '·';
                                 const sc = Math.floor(180 + Math.random() * 75);
-                                colStr += `<span style="color:${rgbToStyle(sc, sc, sc+20)}">·</span>`;
+                                color = rgb(sc, sc, sc+20);
                             } else {
-                                colStr += ' ';
+                                char = ' ';
+                                color = rgb(10, 10, 20);
                             }
                         }
                     } else {
-                        const gb = 0.05 + (row / ROWS) * 0.1;
+                        const gb = 0.05 + (row / ROWS) * 0.08;
                         const idx = Math.floor(gb * 0.4);
-                        const char = ' .,-~:;=!*#$@'[idx] || ' ';
-                        colStr += `<span style="color:rgb(30,25,40)">${char}</span>`;
+                        char = ' .,-~:;=!*#$@'[idx] || ' ';
+                        color = rgb(25, 22, 35);
                     }
                 }
+                
+                colStr += `<span style="color:${color}">${char}</span>`;
             }
             frame.push(colStr);
         }
@@ -367,53 +448,55 @@
             outputStr += '\n';
         }
         
-        const hud = `<span style="color:rgb(40,50,70)">POS: (${player.x.toFixed(1)}, ${player.y.toFixed(1)})  ANG: ${(player.angle * 180 / Math.PI % 360).toFixed(0)}°  H: ${player.height.toFixed(1)}m</span>`;
+        const hud = `<span style="color:rgba(40,50,70,0.8)">POS: (${player.x.toFixed(1)}, ${player.z.toFixed(1)})  ANG: ${(player.angle * 180 / Math.PI % 360).toFixed(0)}°  H: ${player.y.toFixed(1)}m  Buildings: ${WORLD_H}x${WORLD_W}</span>`;
         outputStr = outputStr.slice(0, outputStr.length - 1) + '\n' + hud;
         output.innerHTML = outputStr;
     }
     
     // --- update ---
     function update() {
-        let moveX = 0, moveY = 0;
+        let moveX = 0, moveZ = 0;
         const speed = keys['shift'] ? player.speed * 1.8 : player.speed;
         
         if (keys['w']) {
-            moveX += Math.cos(player.angle) * speed;
-            moveY += Math.sin(player.angle) * speed;
+            moveX += Math.sin(player.angle) * speed;
+            moveZ += Math.cos(player.angle) * speed;
         }
         if (keys['s']) {
-            moveX -= Math.cos(player.angle) * speed;
-            moveY -= Math.sin(player.angle) * speed;
+            moveX -= Math.sin(player.angle) * speed;
+            moveZ -= Math.cos(player.angle) * speed;
         }
         if (keys['a']) {
-            moveX += Math.cos(player.angle - Math.PI/2) * speed * 0.7;
-            moveY += Math.sin(player.angle - Math.PI/2) * speed * 0.7;
+            moveX -= Math.cos(player.angle) * speed * 0.7;
+            moveZ += Math.sin(player.angle) * speed * 0.7;
         }
         if (keys['d']) {
-            moveX += Math.cos(player.angle + Math.PI/2) * speed * 0.7;
-            moveY += Math.sin(player.angle + Math.PI/2) * speed * 0.7;
+            moveX += Math.cos(player.angle) * speed * 0.7;
+            moveZ -= Math.sin(player.angle) * speed * 0.7;
         }
         
+        // Collision with buildings
         const newX = player.x + moveX;
-        const newY = player.y + moveY;
+        const newZ = player.z + moveZ;
         
-        if (newX > 0.5 && newX < MAP_W - 0.5) {
-            const mx = Math.floor(newX + 0.1);
-            const my = Math.floor(player.y + 0.1);
-            if (mx >= 0 && mx < MAP_W && my >= 0 && my < MAP_H && WORLD[my][mx] === 0) {
-                player.x = newX;
-            }
-        }
-        if (newY > 0.5 && newY < MAP_H - 0.5) {
-            const mx = Math.floor(player.x + 0.1);
-            const my = Math.floor(newY + 0.1);
-            if (mx >= 0 && mx < MAP_W && my >= 0 && my < MAP_H && WORLD[my][mx] === 0) {
-                player.y = newY;
-            }
+        // Check X movement
+        let canMoveX = true;
+        const checkX = getBuilding(newX, player.z);
+        if (checkX && checkX.height > 0) canMoveX = false;
+        if (newX > 0.5 && newX < WORLD_W - 0.5 && canMoveX) {
+            player.x = newX;
         }
         
-        player.x = Math.max(0.5, Math.min(MAP_W - 0.5, player.x));
-        player.y = Math.max(0.5, Math.min(MAP_H - 0.5, player.y));
+        // Check Z movement
+        let canMoveZ = true;
+        const checkZ = getBuilding(player.x, newZ);
+        if (checkZ && checkZ.height > 0) canMoveZ = false;
+        if (newZ > 0.5 && newZ < WORLD_H - 0.5 && canMoveZ) {
+            player.z = newZ;
+        }
+        
+        player.x = Math.max(0.5, Math.min(WORLD_W - 0.5, player.x));
+        player.z = Math.max(0.5, Math.min(WORLD_H - 0.5, player.z));
     }
     
     // --- loop ---
@@ -426,7 +509,8 @@
     render();
     setTimeout(gameLoop, 100);
     
-    console.log('🌃 3D ASCII CITY with WORKING COLORS!');
+    console.log('🏙️ Volumetric ASCII City loaded!');
+    console.log('Buildings have windows, edges, and roof details');
 })();
 </script>
 </body>
