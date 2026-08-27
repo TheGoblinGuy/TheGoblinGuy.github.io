@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSRS x GBA Pokémon — Color Tomes</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #181a1a;
+            padding: 2rem;
+            color: #c8b8a8;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.4rem;
+            font-weight: bold;
+            color: #f0d5a0;
+            text-shadow: 0 0 12px #8a6a3a60;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1rem;
+            color: #8a7a6a;
+            margin-bottom: 2.5rem;
+            font-style: italic;
+        }
+
+        .scheme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .scheme-card {
+            background: #22201e;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #3a3430;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7);
+            transition: transform 0.2s ease, border-color 0.3s ease;
+        }
+
+        .scheme-card:hover {
+            transform: translateY(-6px);
+            border-color: #b0804a;
+        }
+
+        .scheme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid #3a3430;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .scheme-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #f0d5a0;
+        }
+
+        .scheme-tag {
+            font-size: 0.6rem;
+            background: #3a3430;
+            padding: 2px 10px;
+            border-radius: 20px;
+            color: #b0a090;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .swatch-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .swatch {
+            flex: 1;
+            min-width: 50px;
+            height: 70px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+            padding: 4px;
+            text-align: center;
+            line-height: 1.3;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .swatch-light {
+            color: #1e1e1a;
+            text-shadow: none;
+        }
+
+        .swatch-hex {
+            font-size: 0.5rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .swatch-label {
+            font-size: 0.5rem;
+            opacity: 0.6;
+            font-weight: 400;
+        }
+
+        .vibe {
+            font-size: 0.8rem;
+            color: #a09080;
+            margin-top: 6px;
+            font-style: italic;
+            border-top: 1px solid #2a2624;
+            padding-top: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #6a5a4a;
+            font-size: 0.85rem;
+            border-top: 1px solid #2a2624;
+            padding-top: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .scheme-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎮 OSRS × GBA POKÉMON · COLOR TOMES</h1>
+    <p class="subtitle">10 palettes blending medieval grit with tropical pixel nostalgia</p>
+
+    <div class="scheme-grid">
+
+        <!-- ============================================================ -->
+        <!-- 1. LUMBRIDGE (OSRS Classic) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🏰 Lumbridge</span>
+                <span class="scheme-tag">OSRS</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#6a7a5a;">Primary<br><span class="swatch-hex">#6a7a5a</span></div>
+                <div class="swatch" style="background:#b08a6a;">Secondary<br><span class="swatch-hex">#b08a6a</span></div>
+                <div class="swatch" style="background:#d4b08a;">Accent<br><span class="swatch-hex">#d4b08a</span></div>
+                <div class="swatch" style="background:#f0e8d8; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f0e8d8</span></div>
+                <div class="swatch" style="background:#2a2a22;">Text<br><span class="swatch-hex">#2a2a22</span></div>
+            </div>
+            <div class="vibe">🌾 Grassy · Medieval · Parchment — like walking through Lumbridge.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 2. AL Kharid (Desert Grit) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🏜️ Al Kharid</span>
+                <span class="scheme-tag">OSRS</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#c08a4a;">Primary<br><span class="swatch-hex">#c08a4a</span></div>
+                <div class="swatch" style="background:#8a6a4a;">Secondary<br><span class="swatch-hex">#8a6a4a</span></div>
+                <div class="swatch" style="background:#e8c08a;">Accent<br><span class="swatch-hex">#e8c08a</span></div>
+                <div class="swatch" style="background:#f8f0e0; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f8f0e0</span></div>
+                <div class="swatch" style="background:#2a241a;">Text<br><span class="swatch-hex">#2a241a</span></div>
+            </div>
+            <div class="vibe">☀️ Sandy · Warm · Dusty — like the desert gate.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 3. HOENN STARTER (Ruby/Sapphire) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🌊 Hoenn Starter</span>
+                <span class="scheme-tag">GBA</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#3a8a7a;">Primary<br><span class="swatch-hex">#3a8a7a</span></div>
+                <div class="swatch" style="background:#e87a4a;">Secondary<br><span class="swatch-hex">#e87a4a</span></div>
+                <div class="swatch" style="background:#f0c04a;">Accent<br><span class="swatch-hex">#f0c04a</span></div>
+                <div class="swatch" style="background:#f8f4ea; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f8f4ea</span></div>
+                <div class="swatch" style="background:#1a2a22;">Text<br><span class="swatch-hex">#1a2a22</span></div>
+            </div>
+            <div class="vibe">🌴 Tropical · Starter-town · GBA glow — like Littleroot Town.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 4. BATTLE TOWER (OSRS x GBA) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">⚔️ Battle Tower</span>
+                <span class="scheme-tag">hybrid</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#5a6a7a;">Primary<br><span class="swatch-hex">#5a6a7a</span></div>
+                <div class="swatch" style="background:#c06a3a;">Secondary<br><span class="swatch-hex">#c06a3a</span></div>
+                <div class="swatch" style="background:#d4b08a;">Accent<br><span class="swatch-hex">#d4b08a</span></div>
+                <div class="swatch" style="background:#1a1a1a;">Bg<br><span class="swatch-hex">#1a1a1a</span></div>
+                <div class="swatch" style="background:#e0d8c8; color:#1e1e1a; border:1px solid #555;">Text<br><span class="swatch-hex">#e0d8c8</span></div>
+            </div>
+            <div class="vibe">🛡️ Gritty · Medieval · Pixel-arena — like a GBA RPG dungeon.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 5. FALADOR (OSRS Stone) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🏛️ Falador</span>
+                <span class="scheme-tag">OSRS</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#7a8a8a;">Primary<br><span class="swatch-hex">#7a8a8a</span></div>
+                <div class="swatch" style="background:#b0a090;">Secondary<br><span class="swatch-hex">#b0a090</span></div>
+                <div class="swatch" style="background:#d4c8b0;">Accent<br><span class="swatch-hex">#d4c8b0</span></div>
+                <div class="swatch" style="background:#f0ece0; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f0ece0</span></div>
+                <div class="swatch" style="background:#1a1a1a;">Text<br><span class="swatch-hex">#1a1a1a</span></div>
+            </div>
+            <div class="vibe">🪨 Stone · Noble · Clean — like Falador's white walls.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 6. RUSTBORO (GBA Town) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🪵 Rustboro</span>
+                <span class="scheme-tag">GBA</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#4a7a5a;">Primary<br><span class="swatch-hex">#4a7a5a</span></div>
+                <div class="swatch" style="background:#c08a5a;">Secondary<br><span class="swatch-hex">#c08a5a</span></div>
+                <div class="swatch" style="background:#f0d08a;">Accent<br><span class="swatch-hex">#f0d08a</span></div>
+                <div class="swatch" style="background:#f4f0e8; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f4f0e8</span></div>
+                <div class="swatch" style="background:#1a2a1a;">Text<br><span class="swatch-hex">#1a2a1a</span></div>
+            </div>
+            <div class="vibe">🌳 Forest-town · Gritty · Warm — like Rustboro with a goblin twist.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 7. VARROCK (OSRS Classic) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🏺 Varrock</span>
+                <span class="scheme-tag">OSRS</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#8a6a4a;">Primary<br><span class="swatch-hex">#8a6a4a</span></div>
+                <div class="swatch" style="background:#b08a5a;">Secondary<br><span class="swatch-hex">#b08a5a</span></div>
+                <div class="swatch" style="background:#d4b08a;">Accent<br><span class="swatch-hex">#d4b08a</span></div>
+                <div class="swatch" style="background:#f0e8d8; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f0e8d8</span></div>
+                <div class="swatch" style="background:#1a1a1a;">Text<br><span class="swatch-hex">#1a1a1a</span></div>
+            </div>
+            <div class="vibe">🏙️ Bustling · Medieval · Earthy — like the Grand Exchange.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 8. SOOTOPOLIS (GBA Water) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🌊 Sootopolis</span>
+                <span class="scheme-tag">GBA</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#3a6a8a;">Primary<br><span class="swatch-hex">#3a6a8a</span></div>
+                <div class="swatch" style="background:#7ab0b0;">Secondary<br><span class="swatch-hex">#7ab0b0</span></div>
+                <div class="swatch" style="background:#f0c86a;">Accent<br><span class="swatch-hex">#f0c86a</span></div>
+                <div class="swatch" style="background:#f8f4ec; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f8f4ec</span></div>
+                <div class="swatch" style="background:#1a1a2a;">Text<br><span class="swatch-hex">#1a1a2a</span></div>
+            </div>
+            <div class="vibe">🌊 Mystical · Aquatic · GBA glow — like Sootopolis City.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 9. GOBLIN VILLAGE (Hybrid) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🧌 Goblin Village</span>
+                <span class="scheme-tag">hybrid</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#4a6a3a;">Primary<br><span class="swatch-hex">#4a6a3a</span></div>
+                <div class="swatch" style="background:#8a5a3a;">Secondary<br><span class="swatch-hex">#8a5a3a</span></div>
+                <div class="swatch" style="background:#c08a4a;">Accent<br><span class="swatch-hex">#c08a4a</span></div>
+                <div class="swatch" style="background:#f0ece0; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f0ece0</span></div>
+                <div class="swatch" style="background:#1a1a12;">Text<br><span class="swatch-hex">#1a1a12</span></div>
+            </div>
+            <div class="vibe">🧌 Gritty · Goblin · Muddy — like the goblin village in OSRS.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 10. POKEMON CENTER (GBA Nostalgia) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">❤️ PokéCenter</span>
+                <span class="scheme-tag">GBA</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#c04a5a;">Primary<br><span class="swatch-hex">#c04a5a</span></div>
+                <div class="swatch" style="background:#f0c04a;">Secondary<br><span class="swatch-hex">#f0c04a</span></div>
+                <div class="swatch" style="background:#6ab0b0;">Accent<br><span class="swatch-hex">#6ab0b0</span></div>
+                <div class="swatch" style="background:#f8f4ec; color:#1e1e1a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f8f4ec</span></div>
+                <div class="swatch" style="background:#1a1a1a;">Text<br><span class="swatch-hex">#1a1a1a</span></div>
+            </div>
+            <div class="vibe">❤️ Warm · Pixel · Welcoming — like the GBA PokéCenter healing jingle.</div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        🎮 FART Goblin Tech — choose your OSRS × GBA palette, then update <code>:root</code> in <code>style.css</code>
+    </div>
+
+</body>
+</html>
