@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>full figure · stable render</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0e111d;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 1.2rem;
+        }
+        .card {
+            background: #181d2b;
+            padding: 1.5rem;
+            border-radius: 2.8rem;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(200, 180, 160, 0.05);
+        }
+        canvas {
+            display: block;
+            width: 520px;
+            height: 650px;
+            border-radius: 2.2rem;
+            background: #eee3da;
+            box-shadow: inset 0 0 0 1px rgba(255, 220, 190, 0.06);
+            image-rendering: auto;
+        }
+        .caption {
+            text-align: center;
+            margin-top: 1rem;
+            color: #a8a3b8;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            border-top: 1px solid #2a3045;
+            padding-top: 1rem;
+        }
+        .caption span {
+            background: #232b3e;
+            padding: 0.15rem 1.2rem;
+            border-radius: 30px;
+            color: #cbc4d8;
+        }
+        @media (max-width: 580px) {
+            .card { padding: 0.8rem; border-radius: 2rem; }
+            canvas { width: 100%; height: auto; aspect-ratio: 520/650; border-radius: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <canvas id="figureCanvas" width="520" height="650"></canvas>
+    <div class="caption"><span>✦  full figure · gentle form  ✦</span></div>
+</div>
+<script>
+    (function drawStableFigure() {
+        const canvas = document.getElementById('figureCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        // --- background ---
+        const bg = ctx.createRadialGradient(260, 300, 60, 260, 350, 420);
+        bg.addColorStop(0, '#efe4da');
+        bg.addColorStop(0.7, '#dfcfbe');
+        bg.addColorStop(1, '#cbb8a6');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, 520, 650);
+
+        // --- ground shadow ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(30, 20, 12, 0.2)';
+        ctx.shadowBlur = 36;
+        ctx.shadowOffsetY = 12;
+        ctx.beginPath();
+        ctx.ellipse(260, 630, 120, 24, 0, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(60, 45, 32, 0.15)';
+        ctx.fill();
+        ctx.restore();
+
+        // --- torso / dress form ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(20, 12, 6, 0.2)';
+        ctx.shadowBlur = 24;
+        ctx.shadowOffsetY = 10;
+
+        ctx.beginPath();
+        ctx.moveTo(180, 310);
+        ctx.quadraticCurveTo(130, 350, 115, 430);
+        ctx.quadraticCurveTo(105, 500, 130, 560);
+        ctx.quadraticCurveTo(170, 600, 260, 610);
+        ctx.quadraticCurveTo(350, 600, 390, 560);
+        ctx.quadraticCurveTo(415, 500, 405, 430);
+        ctx.quadraticCurveTo(390, 350, 340, 310);
+        ctx.quadraticCurveTo(260, 295, 180, 310);
+        ctx.closePath();
+        ctx.fillStyle = '#b59b88';
+        ctx.fill();
+
+        // overlay fold
+        ctx.beginPath();
+        ctx.moveTo(190, 340);
+        ctx.quadraticCurveTo(155, 390, 145, 470);
+        ctx.quadraticCurveTo(160, 520, 205, 555);
+        ctx.quadraticCurveTo(260, 572, 315, 555);
+        ctx.quadraticCurveTo(360, 520, 375, 470);
+        ctx.quadraticCurveTo(365, 390, 330, 340);
+        ctx.quadraticCurveTo(260, 325, 190, 340);
+        ctx.fillStyle = '#c9b09b';
+        ctx.shadowBlur = 10;
+        ctx.fill();
+        ctx.restore();
+
+        // --- arms ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(20, 12, 8, 0.2)';
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 6;
+        // left
+        ctx.beginPath();
+        ctx.moveTo(185, 320);
+        ctx.quadraticCurveTo(120, 350, 85, 425);
+        ctx.quadraticCurveTo(65, 470, 80, 495);
+        ctx.quadraticCurveTo(98, 505, 115, 485);
+        ctx.quadraticCurveTo(125, 455, 135, 420);
+        ctx.quadraticCurveTo(148, 375, 185, 340);
+        ctx.fillStyle = '#dac2b0';
+        ctx.fill();
+        // right
+        ctx.beginPath();
+        ctx.moveTo(335, 320);
+        ctx.quadraticCurveTo(400, 350, 435, 425);
+        ctx.quadraticCurveTo(455, 470, 440, 495);
+        ctx.quadraticCurveTo(422, 505, 405, 485);
+        ctx.quadraticCurveTo(395, 455, 385, 420);
+        ctx.quadraticCurveTo(372, 375, 335, 340);
+        ctx.fillStyle = '#dac2b0';
+        ctx.fill();
+        ctx.restore();
+
+        // --- neck ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(10, 8, 6, 0.15)';
+        ctx.shadowBlur = 12;
+        ctx.shadowOffsetY = 3;
+        ctx.beginPath();
+        ctx.ellipse(260, 285, 36, 26, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#dfcbbd';
+        ctx.fill();
+        ctx.restore();
+
+        // --- head ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(20, 12, 6, 0.22)';
+        ctx.shadowBlur = 24;
+        ctx.shadowOffsetY = 8;
+        ctx.beginPath();
+        ctx.ellipse(260, 190, 68, 82, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#eed7c8';
+        ctx.fill();
+        ctx.restore();
+
+        // --- hair (flowing, layered) ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.18)';
+        ctx.shadowBlur = 22;
+        ctx.shadowOffsetY = 6;
+
+        // dark back layer
+        ctx.beginPath();
+        ctx.moveTo(175, 140);
+        ctx.bezierCurveTo(120, 100, 80, 140, 60, 210);
+        ctx.bezierCurveTo(40, 280, 55, 370, 80, 410);
+        ctx.bezierCurveTo(100, 430, 125, 400, 135, 350);
+        ctx.bezierCurveTo(115, 280, 125, 180, 175, 140);
+        ctx.fillStyle = '#3b2c22';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(345, 140);
+        ctx.bezierCurveTo(400, 100, 440, 140, 460, 210);
+        ctx.bezierCurveTo(480, 280, 465, 370, 440, 410);
+        ctx.bezierCurveTo(420, 430, 395, 400, 385, 350);
+        ctx.bezierCurveTo(405, 280, 395, 180, 345, 140);
+        ctx.fillStyle = '#3b2c22';
+        ctx.fill();
+
+        // mid layer
+        ctx.beginPath();
+        ctx.moveTo(185, 125);
+        ctx.bezierCurveTo(140, 85, 100, 125, 80, 195);
+        ctx.bezierCurveTo(60, 265, 70, 350, 100, 395);
+        ctx.bezierCurveTo(118, 412, 140, 385, 148, 340);
+        ctx.bezierCurveTo(130, 270, 140, 170, 185, 125);
+        ctx.fillStyle = '#5a4235';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(335, 125);
+        ctx.bezierCurveTo(380, 85, 420, 125, 440, 195);
+        ctx.bezierCurveTo(460, 265, 450, 350, 420, 395);
+        ctx.bezierCurveTo(402, 412, 380, 385, 372, 340);
+        ctx.bezierCurveTo(390, 270, 380, 170, 335, 125);
+        ctx.fillStyle = '#5a4235';
+        ctx.fill();
+
+        // front strands
+        ctx.beginPath();
+        ctx.moveTo(205, 115);
+        ctx.bezierCurveTo(175, 80, 150, 110, 140, 170);
+        ctx.bezierCurveTo(130, 230, 140, 300, 155, 345);
+        ctx.bezierCurveTo(168, 362, 180, 345, 185, 310);
+        ctx.bezierCurveTo(170, 250, 175, 160, 205, 115);
+        ctx.fillStyle = '#7a5d4a';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(315, 115);
+        ctx.bezierCurveTo(345, 80, 370, 110, 380, 170);
+        ctx.bezierCurveTo(390, 230, 380, 300, 365, 345);
+        ctx.bezierCurveTo(352, 362, 340, 345, 335, 310);
+        ctx.bezierCurveTo(350, 250, 345, 160, 315, 115);
+        ctx.fillStyle = '#7a5d4a';
+        ctx.fill();
+        ctx.restore();
+
+        // --- eyes ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.06)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetY = 2;
+        // left
+        ctx.beginPath();
+        ctx.ellipse(228, 182, 20, 16, -0.04, 0, Math.PI * 2);
+        ctx.fillStyle = '#f8efe8';
+        ctx.fill();
+        ctx.strokeStyle = '#2d231e';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(233, 184, 10, 11, 0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#4f3a2e';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(236, 182, 5, 6, 0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#1f150e';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(240, 178, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#fcf9f5';
+        ctx.fill();
+        // right
+        ctx.beginPath();
+        ctx.ellipse(292, 182, 20, 16, 0.04, 0, Math.PI * 2);
+        ctx.fillStyle = '#f8efe8';
+        ctx.fill();
+        ctx.strokeStyle = '#2d231e';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.ellipse(287, 184, 10, 11, -0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#4f3a2e';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(284, 182, 5, 6, -0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#1f150e';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(280, 178, 3, 0, Math.PI * 2);
+        ctx.fillStyle = '#fcf9f5';
+        ctx.fill();
+        ctx.restore();
+
+        // --- eyebrows ---
+        ctx.save();
+        ctx.strokeStyle = '#3d2e23';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = 'rgba(0,0,0,0.05)';
+        ctx.shadowBlur = 4;
+        ctx.beginPath();
+        ctx.moveTo(198, 158);
+        ctx.quadraticCurveTo(228, 142, 256, 160);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(264, 160);
+        ctx.quadraticCurveTo(292, 142, 322, 158);
+        ctx.stroke();
+        ctx.restore();
+
+        // --- nose ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(30, 18, 10, 0.08)';
+        ctx.shadowBlur = 6;
+        ctx.shadowOffsetY = 2;
+        ctx.beginPath();
+        ctx.moveTo(260, 192);
+        ctx.quadraticCurveTo(250, 226, 240, 242);
+        ctx.quadraticCurveTo(258, 250, 260, 252);
+        ctx.quadraticCurveTo(262, 250, 280, 242);
+        ctx.quadraticCurveTo(270, 226, 260, 192);
+        ctx.fillStyle = '#e5cdbc';
+        ctx.fill();
+        ctx.strokeStyle = '#b0927d';
+        ctx.lineWidth = 1.0;
+        ctx.stroke();
+        ctx.restore();
+
+        // --- mouth ---
+        ctx.save();
+        ctx.shadowColor = 'rgba(40, 20, 10, 0.12)';
+        ctx.shadowBlur = 12;
+        ctx.shadowOffsetY = 3;
+        ctx.beginPath();
+        ctx.moveTo(230, 268);
+        ctx.quadraticCurveTo(260, 288, 290, 268);
+        ctx.quadraticCurveTo(260, 296, 230, 268);
+        ctx.fillStyle = '#b5624a';
+        ctx.fill();
+        ctx.strokeStyle = '#8f4535';
+        ctx.lineWidth = 1.4;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(238, 276);
+        ctx.quadraticCurveTo(260, 294, 282, 276);
+        ctx.strokeStyle = '#a5533e';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+        ctx.restore();
+
+        // --- soft glow ---
+        ctx.save();
+        ctx.globalAlpha = 0.06;
+        const glow = ctx.createRadialGradient(260, 240, 30, 260, 280, 320);
+        glow.addColorStop(0, '#ffeedd');
+        glow.addColorStop(1, 'transparent');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, 520, 650);
+        ctx.restore();
+
+        // --- vignette ---
+        const vig = ctx.createRadialGradient(260, 290, 160, 260, 290, 420);
+        vig.addColorStop(0, 'rgba(0,0,0,0)');
+        vig.addColorStop(1, 'rgba(20, 14, 10, 0.15)');
+        ctx.fillStyle = vig;
+        ctx.fillRect(0, 0, 520, 650);
+
+        // --- signature ---
+        ctx.fillStyle = '#5a4c40';
+        ctx.globalAlpha = 0.15;
+        ctx.font = '9px "Segoe UI", monospace';
+        ctx.fillText('✦  full figure · gentle form  ✦', 350, 635);
+        ctx.globalAlpha = 1.0;
+    })();
+</script>
+</body>
+</html>
