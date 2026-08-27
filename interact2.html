@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>COSMIC ODYSSEY · 4K · particles · comets · collisions</title>
+    <title>OPTIMIZED · cosmic odyssey</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -23,13 +23,13 @@
         }
         .controls {
             position: fixed;
-            bottom: 2rem;
+            bottom: 1.5rem;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 1rem;
+            gap: 0.6rem;
             background: rgba(10, 14, 26, 0.85);
-            padding: 0.8rem 1.5rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 50px;
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.06);
@@ -42,9 +42,9 @@
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.06);
             color: #8a8aaa;
-            padding: 0.4rem 1.2rem;
+            padding: 0.3rem 1rem;
             border-radius: 30px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             letter-spacing: 0.5px;
             cursor: pointer;
             transition: all 0.3s;
@@ -73,35 +73,36 @@
         }
         .hud {
             position: fixed;
-            top: 1.5rem;
-            right: 2rem;
-            color: rgba(255,255,255,0.06);
-            font-size: 0.7rem;
+            top: 1rem;
+            right: 1.5rem;
+            color: rgba(255,255,255,0.04);
+            font-size: 0.6rem;
             font-family: monospace;
             text-align: right;
             pointer-events: none;
             z-index: 50;
             letter-spacing: 1px;
+            line-height: 1.6;
         }
         @media (max-width: 768px) {
-            .controls { bottom: 1rem; padding: 0.6rem 1rem; gap: 0.5rem; width: 95%; }
-            .controls button { font-size: 0.6rem; padding: 0.3rem 0.8rem; }
+            .controls { bottom: 0.8rem; padding: 0.4rem 0.8rem; gap: 0.4rem; width: 95%; }
+            .controls button { font-size: 0.55rem; padding: 0.25rem 0.7rem; }
             .hud { display: none; }
         }
     </style>
 </head>
 <body>
 <canvas id="cosmicCanvas"></canvas>
-<div class="hud">✦  COSMIC ODYSSEY  ✦</div>
+<div class="hud">✦ OPTIMIZED ODYSSEY ✦</div>
 <div class="controls">
     <button id="soundBtn" class="active">🔊 Sound</button>
     <button id="particleBtn" class="active">✨ Particles</button>
     <button id="cometBtn" class="active">☄️ Comets</button>
     <button id="resetBtn">🌀 Reset</button>
-    <button id="explodeBtn" class="danger">💥 EXPLODE</button>
+    <button id="explodeBtn" class="danger">💥 BOOM</button>
 </div>
 <script>
-(function cosmicOdyssey() {
+(function optimizedCosmic() {
     const canvas = document.getElementById('cosmicCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -114,6 +115,9 @@
     let cometsOn = true;
     let audioCtx = null;
     let frameId = null;
+    let cometSpawnTimer = 0;
+    const MAX_PARTICLES = 400;
+    const MAX_COMET_SPEED = 12;
     
     // --- resize ---
     function resize() {
@@ -131,27 +135,20 @@
     class RoamingPlanet {
         constructor() {
             this.reset();
-            this.size = 60 + Math.random() * 80;
+            this.size = 40 + Math.random() * 60;
             this.hue = Math.random() * 60 + 280;
-            this.speed = 0.2 + Math.random() * 0.3;
-            this.orbitRadius = 200 + Math.random() * 300;
             this.angleOffset = Math.random() * Math.PI * 2;
-            this.ringPulse = Math.random() * 0.5;
         }
         
         reset() {
             this.x = 100 + Math.random() * (W - 200);
             this.y = 100 + Math.random() * (H - 200);
-            this.vx = (Math.random() - 0.5) * 0.5;
-            this.vy = (Math.random() - 0.5) * 0.5;
         }
         
         update() {
-            // gentle roaming with sine wave
-            this.x += Math.sin(time * 0.02 + this.angleOffset) * 0.3;
-            this.y += Math.cos(time * 0.025 + this.angleOffset * 0.7) * 0.3;
+            this.x += Math.sin(time * 0.015 + this.angleOffset) * 0.25;
+            this.y += Math.cos(time * 0.02 + this.angleOffset * 0.7) * 0.25;
             
-            // avoid edges
             if (this.x < this.size) { this.x = this.size; }
             if (this.x > W - this.size) { this.x = W - this.size; }
             if (this.y < this.size) { this.y = this.size; }
@@ -163,12 +160,12 @@
         draw() {
             const px = this.x;
             const py = this.y;
-            const pr = this.size * (0.8 + Math.sin(time * 0.1 + this.angleOffset) * 0.05);
+            const pr = this.size * (0.85 + Math.sin(time * 0.08 + this.angleOffset) * 0.04);
             
             // glow
             ctx.save();
-            ctx.shadowColor = `hsla(${this.hue}, 70%, 60%, 0.15)`;
-            ctx.shadowBlur = 80;
+            ctx.shadowColor = `hsla(${this.hue}, 70%, 60%, 0.12)`;
+            ctx.shadowBlur = 60;
             ctx.beginPath();
             ctx.arc(px, py, pr, 0, Math.PI * 2);
             const grad = ctx.createRadialGradient(px - pr*0.3, py - pr*0.3, pr*0.1, px, py, pr);
@@ -178,52 +175,45 @@
             grad.addColorStop(1, `hsl(${this.hue - 40}, 50%, 20%)`);
             ctx.fillStyle = grad;
             ctx.fill();
-            ctx.restore();
             
             // rings
-            ctx.save();
+            ctx.shadowBlur = 10;
             ctx.translate(px, py);
-            ctx.rotate(time * 0.03 + this.angleOffset);
-            const rp = Math.sin(time * 0.1 + this.ringPulse) * 5;
-            ctx.shadowColor = 'rgba(200, 150, 255, 0.05)';
-            ctx.shadowBlur = 15;
+            ctx.rotate(time * 0.02 + this.angleOffset);
+            const rp = Math.sin(time * 0.08 + this.angleOffset) * 3;
             ctx.beginPath();
-            ctx.ellipse(0, 0, pr * 1.6 + rp, pr * 0.25 + Math.sin(time*0.08 + this.ringPulse)*2, 0, 0, Math.PI*2);
-            ctx.strokeStyle = `hsla(${this.hue + 20}, 60%, 70%, ${0.15 + Math.sin(time*0.1 + this.ringPulse)*0.05})`;
-            ctx.lineWidth = 2.5;
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.ellipse(0, 0, pr * 1.8 + rp*1.2, pr * 0.3 + Math.sin(time*0.07 + this.ringPulse)*2.5, 0, 0, Math.PI*2);
-            ctx.strokeStyle = `hsla(${this.hue + 40}, 50%, 60%, ${0.1 + Math.sin(time*0.08 + this.ringPulse)*0.04})`;
-            ctx.lineWidth = 1.8;
+            ctx.ellipse(0, 0, pr * 1.5 + rp, pr * 0.2 + Math.sin(time*0.06 + this.angleOffset)*1.5, 0, 0, Math.PI*2);
+            ctx.strokeStyle = `hsla(${this.hue + 20}, 60%, 70%, ${0.12 + Math.sin(time*0.08 + this.angleOffset)*0.04})`;
+            ctx.lineWidth = 2;
             ctx.stroke();
             ctx.restore();
         }
     }
     
-    // --- comet class ---
+    // --- comet class (fast, colorful, short-lived) ---
     class Comet {
         constructor() {
             this.reset();
             this.trail = [];
-            this.maxTrail = 40 + Math.random() * 30;
+            this.maxTrail = 25 + Math.floor(Math.random() * 15);
+            this.hue = Math.random() * 360;
+            this.size = 3 + Math.random() * 4;
+            this.speed = 6 + Math.random() * 6; // FAST!
         }
         
         reset() {
             // spawn from edges
             const side = Math.floor(Math.random() * 4);
-            if (side === 0) { this.x = -20; this.y = Math.random() * H; }
-            else if (side === 1) { this.x = W + 20; this.y = Math.random() * H; }
-            else if (side === 2) { this.x = Math.random() * W; this.y = -20; }
-            else { this.x = Math.random() * W; this.y = H + 20; }
+            if (side === 0) { this.x = -30; this.y = Math.random() * H; }
+            else if (side === 1) { this.x = W + 30; this.y = Math.random() * H; }
+            else if (side === 2) { this.x = Math.random() * W; this.y = -30; }
+            else { this.x = Math.random() * W; this.y = H + 30; }
             
             const angle = Math.random() * Math.PI * 2;
-            const speed = 2 + Math.random() * 5;
-            this.vx = Math.cos(angle) * speed;
-            this.vy = Math.sin(angle) * speed;
-            this.size = 2 + Math.random() * 4;
-            this.hue = 30 + Math.random() * 30; // warm colors
-            this.life = 300 + Math.random() * 400;
+            this.vx = Math.cos(angle) * this.speed;
+            this.vy = Math.sin(angle) * this.speed;
+            this.hue = Math.random() * 360;
+            this.life = 120 + Math.random() * 150; // shorter life
             this.maxLife = this.life;
             this.trail = [];
         }
@@ -231,19 +221,17 @@
         update() {
             this.x += this.vx;
             this.y += this.vy;
-            this.life -= 0.5;
+            this.life -= 1.5; // faster decay
             
             // trail
-            this.trail.push({x: this.x, y: this.y, life: 1});
+            this.trail.push({x: this.x, y: this.y});
             if (this.trail.length > this.maxTrail) {
                 this.trail.shift();
             }
-            this.trail.forEach(t => t.life -= 0.03);
             
             // check if dead
-            if (this.life <= 0 || this.x < -100 || this.x > W+100 || this.y < -100 || this.y > H+100) {
-                this.reset();
-                return true;
+            if (this.life <= 0 || this.x < -150 || this.x > W+150 || this.y < -150 || this.y > H+150) {
+                return true; // needs reset
             }
             return false;
         }
@@ -253,38 +241,40 @@
             ctx.save();
             for (let i = 0; i < this.trail.length; i++) {
                 const t = this.trail[i];
-                const alpha = (i / this.trail.length) * 0.6 * t.life;
-                const size = this.size * (i / this.trail.length) * 0.8;
+                const progress = i / this.trail.length;
+                const alpha = progress * 0.7 * (this.life / this.maxLife);
+                const size = this.size * (0.2 + progress * 0.8);
                 ctx.beginPath();
                 ctx.arc(t.x, t.y, size, 0, Math.PI * 2);
-                ctx.fillStyle = `hsla(${this.hue}, 100%, 70%, ${alpha * 0.3})`;
-                ctx.shadowColor = `hsla(${this.hue}, 100%, 60%, ${alpha * 0.1})`;
-                ctx.shadowBlur = 20;
+                ctx.fillStyle = `hsla(${this.hue + progress * 20}, 100%, 70%, ${alpha * 0.3})`;
+                ctx.shadowColor = `hsla(${this.hue + progress * 20}, 100%, 60%, ${alpha * 0.05})`;
+                ctx.shadowBlur = 15;
                 ctx.fill();
             }
             ctx.restore();
             
             // comet head
             ctx.save();
-            ctx.shadowColor = `hsla(${this.hue}, 100%, 70%, 0.5)`;
+            ctx.shadowColor = `hsla(${this.hue}, 100%, 70%, 0.6)`;
             ctx.shadowBlur = 40;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+            ctx.arc(this.x, this.y, this.size * 1.8, 0, Math.PI * 2);
             const grad = ctx.createRadialGradient(
-                this.x - this.size, this.y - this.size, 0,
-                this.x, this.y, this.size * 2
+                this.x - this.size*0.5, this.y - this.size*0.5, 0,
+                this.x, this.y, this.size * 1.8
             );
-            grad.addColorStop(0, `hsl(${this.hue + 20}, 100%, 90%)`);
-            grad.addColorStop(0.4, `hsl(${this.hue}, 100%, 70%)`);
-            grad.addColorStop(1, `hsla(${this.hue - 20}, 80%, 50%, 0.5)`);
+            grad.addColorStop(0, `hsl(${this.hue + 30}, 100%, 95%)`);
+            grad.addColorStop(0.3, `hsl(${this.hue}, 100%, 75%)`);
+            grad.addColorStop(1, `hsla(${this.hue - 20}, 80%, 50%, 0.6)`);
             ctx.fillStyle = grad;
             ctx.fill();
             
             // bright core
             ctx.shadowBlur = 60;
+            ctx.shadowColor = `hsla(${this.hue}, 100%, 80%, 0.8)`;
             ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size * 0.6, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.arc(this.x, this.y, this.size * 0.7, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, 0.9)`;
             ctx.fill();
             ctx.restore();
         }
@@ -293,40 +283,30 @@
             const dx = this.x - planet.x;
             const dy = this.y - planet.y;
             const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < this.size * 2 + planet.size * 0.5) {
-                return true;
-            }
-            return false;
+            return dist < this.size * 2 + planet.size * 0.4;
         }
     }
     
-    // --- particle system (smoke/dust + sparkle) ---
+    // --- optimized particle (smoke/dust, short life) ---
     class DustParticle {
         constructor(x, y, vx, vy, color, size) {
             this.x = x || Math.random() * W;
             this.y = y || Math.random() * H;
-            this.vx = vx || (Math.random() - 0.5) * 0.3;
-            this.vy = vy || (Math.random() - 0.5) * 0.3;
-            this.size = size || 1 + Math.random() * 4;
-            this.maxSize = this.size;
-            this.life = 80 + Math.random() * 120;
+            this.vx = vx || (Math.random() - 0.5) * 0.5;
+            this.vy = vy || (Math.random() - 0.5) * 0.5;
+            this.size = size || 1 + Math.random() * 3;
+            this.life = 30 + Math.random() * 40; // SHORTER LIFE
             this.maxLife = this.life;
             this.hue = color || 280 + Math.random() * 60;
             this.type = Math.random() > 0.7 ? 'sparkle' : 'dust';
-            this.gravity = (Math.random() - 0.5) * 0.01;
         }
         
         update() {
             this.x += this.vx;
             this.y += this.vy;
-            this.vy += this.gravity;
-            this.vx *= 0.999;
-            this.vy *= 0.999;
-            this.life -= 0.2;
-            
-            if (this.type === 'sparkle') {
-                this.size = this.maxSize * (0.5 + Math.sin(time * 0.1 + this.x) * 0.5);
-            }
+            this.vx *= 0.99;
+            this.vy *= 0.99;
+            this.life -= 0.6; // faster decay
             
             if (this.life <= 0 || this.x < -50 || this.x > W+50 || this.y < -50 || this.y > H+50) {
                 this.reset();
@@ -336,26 +316,24 @@
         reset() {
             this.x = Math.random() * W;
             this.y = Math.random() * H;
-            this.vx = (Math.random() - 0.5) * 0.3;
-            this.vy = (Math.random() - 0.5) * 0.3;
-            this.life = 80 + Math.random() * 120;
+            this.vx = (Math.random() - 0.5) * 0.5;
+            this.vy = (Math.random() - 0.5) * 0.5;
+            this.life = 30 + Math.random() * 40;
             this.maxLife = this.life;
-            this.size = 1 + Math.random() * 4;
-            this.maxSize = this.size;
+            this.size = 1 + Math.random() * 3;
             this.hue = 280 + Math.random() * 60;
             this.type = Math.random() > 0.7 ? 'sparkle' : 'dust';
         }
         
         draw() {
-            const alpha = Math.min(1, this.life / this.maxLife * 2);
+            const alpha = Math.min(1, this.life / this.maxLife * 2.5);
             ctx.save();
             
             if (this.type === 'sparkle') {
-                ctx.globalAlpha = alpha * 0.6;
-                ctx.shadowColor = `hsla(${this.hue}, 100%, 80%, 0.3)`;
-                ctx.shadowBlur = 20;
-                const s = this.size * 0.8;
-                // star shape
+                ctx.globalAlpha = alpha * 0.5;
+                ctx.shadowColor = `hsla(${this.hue}, 100%, 80%, 0.2)`;
+                ctx.shadowBlur = 15;
+                const s = this.size * 0.7;
                 ctx.beginPath();
                 for (let i = 0; i < 5; i++) {
                     const angle = (i / 5) * Math.PI * 2 - Math.PI/2;
@@ -365,22 +343,22 @@
                                    this.y + Math.sin(angle) * (i % 2 === 0 ? s : s * 0.4));
                 }
                 ctx.closePath();
-                ctx.fillStyle = `hsla(${this.hue}, 100%, 80%, ${alpha * 0.5})`;
+                ctx.fillStyle = `hsla(${this.hue}, 100%, 80%, ${alpha * 0.4})`;
                 ctx.fill();
             } else {
                 // dust/smoke
-                ctx.globalAlpha = alpha * 0.15;
-                ctx.shadowColor = `hsla(${this.hue}, 50%, 50%, 0.05)`;
-                ctx.shadowBlur = 30;
+                ctx.globalAlpha = alpha * 0.12;
+                ctx.shadowColor = `hsla(${this.hue}, 50%, 50%, 0.03)`;
+                ctx.shadowBlur = 20;
                 const grad = ctx.createRadialGradient(
                     this.x, this.y, 0,
-                    this.x, this.y, this.size * 2
+                    this.x, this.y, this.size * 1.8
                 );
-                grad.addColorStop(0, `hsla(${this.hue}, 70%, 70%, ${alpha * 0.2})`);
+                grad.addColorStop(0, `hsla(${this.hue}, 70%, 70%, ${alpha * 0.15})`);
                 grad.addColorStop(1, `hsla(${this.hue}, 50%, 50%, 0)`);
                 ctx.fillStyle = grad;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size * 2, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, this.size * 1.8, 0, Math.PI * 2);
                 ctx.fill();
             }
             ctx.restore();
@@ -389,58 +367,60 @@
     
     // --- init objects ---
     const planets = [];
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 4; i++) {
         planets.push(new RoamingPlanet());
     }
     
     const comets = [];
-    for (let i = 0; i < 8; i++) {
-        comets.push(new Comet());
-    }
+    let activeComets = 0;
+    const MAX_COMETS = 5;
     
     const dustParticles = [];
-    for (let i = 0; i < 300; i++) {
+    for (let i = 0; i < 200; i++) {
         dustParticles.push(new DustParticle());
     }
     
-    // --- collision effects ---
+    // --- collision effects (optimized) ---
     function createExplosion(x, y, size, color) {
-        for (let i = 0; i < size * 3; i++) {
+        const count = Math.min(size * 2, 60);
+        for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const speed = 1 + Math.random() * 6;
+            const speed = 1 + Math.random() * 5;
             const p = new DustParticle(
-                x + (Math.random() - 0.5) * 20,
-                y + (Math.random() - 0.5) * 20,
+                x + (Math.random() - 0.5) * 15,
+                y + (Math.random() - 0.5) * 15,
                 Math.cos(angle) * speed,
                 Math.sin(angle) * speed,
                 color || 280 + Math.random() * 60,
-                1 + Math.random() * 5
+                1 + Math.random() * 4
             );
-            p.life = 60 + Math.random() * 80;
+            p.life = 25 + Math.random() * 30;
             p.maxLife = p.life;
             p.type = Math.random() > 0.5 ? 'sparkle' : 'dust';
             dustParticles.push(p);
         }
-        while (dustParticles.length > 800) dustParticles.shift();
+        while (dustParticles.length > MAX_PARTICLES) {
+            dustParticles.shift();
+        }
         playExplosionSound();
     }
     
     function playExplosionSound() {
         if (!soundOn || !audioCtx) return;
         try {
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 6; i++) {
                 setTimeout(() => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
                     osc.type = 'sawtooth';
-                    osc.frequency.value = 100 + Math.random() * 400;
-                    gain.gain.value = 0.03 * (1 - i/8);
-                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    osc.frequency.value = 150 + Math.random() * 300;
+                    gain.gain.value = 0.02 * (1 - i/6);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
                     osc.connect(gain);
                     gain.connect(audioCtx.destination);
                     osc.start();
-                    osc.stop(audioCtx.currentTime + 0.1);
-                }, i * 20);
+                    osc.stop(audioCtx.currentTime + 0.08);
+                }, i * 15);
             }
         } catch(e) { /* ignore */ }
     }
@@ -464,7 +444,7 @@
             const gain = audioCtx.createGain();
             osc.type = 'sine';
             osc.frequency.value = freq;
-            gain.gain.value = vol * 0.05;
+            gain.gain.value = vol * 0.04;
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
@@ -475,12 +455,21 @@
     
     function playChord() {
         if (!soundOn || !audioCtx) return;
-        const base = 150 + Math.random() * 200;
-        [0, 4, 7, 12, 16].forEach((n, i) => {
+        const base = 150 + Math.random() * 150;
+        [0, 4, 7, 12].forEach((n, i) => {
             setTimeout(() => {
-                playTone(base * Math.pow(2, n/12), 0.5, 0.15 - i * 0.02);
-            }, i * 50);
+                playTone(base * Math.pow(2, n/12), 0.4, 0.12 - i * 0.02);
+            }, i * 40);
         });
+    }
+    
+    // --- spawn comet (random interval) ---
+    function spawnComet() {
+        if (!cometsOn) return;
+        if (comets.length < MAX_COMETS) {
+            const comet = new Comet();
+            comets.push(comet);
+        }
     }
     
     // --- interaction ---
@@ -499,7 +488,8 @@
     canvas.addEventListener('click', (e) => {
         initAudio();
         playChord();
-        createExplosion(e.clientX, e.clientY, 30, 30 + Math.random() * 30);
+        createExplosion(e.clientX, e.clientY, 25, 30 + Math.random() * 30);
+        spawnComet(); // spawn on click too!
     });
     
     canvas.addEventListener('touchstart', (e) => {
@@ -507,7 +497,8 @@
         const touch = e.touches[0];
         initAudio();
         playChord();
-        createExplosion(touch.clientX, touch.clientY, 25, 30 + Math.random() * 30);
+        createExplosion(touch.clientX, touch.clientY, 20, 30 + Math.random() * 30);
+        spawnComet();
     }, { passive: false });
     
     // --- controls ---
@@ -528,24 +519,28 @@
         cometsOn = !cometsOn;
         this.textContent = cometsOn ? '☄️ Comets' : '☄️ Off';
         this.classList.toggle('active');
+        if (!cometsOn) {
+            comets.length = 0;
+        }
     });
     
     document.getElementById('resetBtn').addEventListener('click', function() {
         planets.forEach(p => p.reset());
-        comets.forEach(c => c.reset());
+        comets.length = 0;
         dustParticles.length = 0;
-        for (let i = 0; i < 300; i++) dustParticles.push(new DustParticle());
+        for (let i = 0; i < 200; i++) dustParticles.push(new DustParticle());
         initAudio();
         playChord();
+        cometSpawnTimer = 0;
     });
     
     document.getElementById('explodeBtn').addEventListener('click', function() {
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 4; i++) {
             setTimeout(() => {
                 const x = 100 + Math.random() * (W - 200);
                 const y = 100 + Math.random() * (H - 200);
-                createExplosion(x, y, 40 + Math.random() * 30, Math.random() * 360);
-            }, i * 200);
+                createExplosion(x, y, 30 + Math.random() * 20, Math.random() * 360);
+            }, i * 150);
         }
     });
     
@@ -554,24 +549,22 @@
         time += 0.02;
         
         // clear with subtle fade
-        ctx.fillStyle = 'rgba(5, 8, 18, 0.15)';
+        ctx.fillStyle = 'rgba(5, 8, 18, 0.12)';
         ctx.fillRect(0, 0, W, H);
         
-        // --- background nebula ---
+        // --- background nebula (optimized) ---
         ctx.save();
-        ctx.globalAlpha = 0.015;
-        for (let i = 0; i < 6; i++) {
-            const x = W/2 + Math.sin(time * 0.03 + i * 1.5) * W * 0.35;
-            const y = H/2 + Math.cos(time * 0.025 + i * 1.2) * H * 0.35;
-            const r = 200 + Math.sin(time * 0.02 + i) * 80;
+        ctx.globalAlpha = 0.01;
+        for (let i = 0; i < 4; i++) {
+            const x = W/2 + Math.sin(time * 0.02 + i * 1.8) * W * 0.3;
+            const y = H/2 + Math.cos(time * 0.018 + i * 1.4) * H * 0.3;
+            const r = 180 + Math.sin(time * 0.015 + i) * 60;
             const grad = ctx.createRadialGradient(x, y, 10, x, y, r);
             const colors = [
                 ['#ff6b9d', '#ff0066'],
                 ['#6b9dff', '#0066ff'],
                 ['#9d6bff', '#6600ff'],
-                ['#ff9d6b', '#ff6600'],
-                ['#6bff9d', '#00ff66'],
-                ['#ff6bff', '#ff00aa']
+                ['#ff9d6b', '#ff6600']
             ];
             const [c1, c2] = colors[i % colors.length];
             grad.addColorStop(0, c1);
@@ -589,51 +582,67 @@
             p.draw();
         });
         
-        // --- draw comets ---
+        // --- comet spawning (random interval) ---
         if (cometsOn) {
-            comets.forEach(c => {
-                const died = c.update();
-                c.draw();
+            cometSpawnTimer -= 0.02;
+            if (cometSpawnTimer <= 0) {
+                spawnComet();
+                // random interval: 1-4 seconds
+                cometSpawnTimer = 60 + Math.random() * 180;
+            }
+            
+            // update and draw comets
+            for (let i = comets.length - 1; i >= 0; i--) {
+                const c = comets[i];
+                const dead = c.update();
                 
                 // check collisions with planets
-                planets.forEach(p => {
+                let hit = false;
+                for (const p of planets) {
                     if (c.checkCollision(p)) {
-                        createExplosion(c.x, c.y, 20, c.hue);
-                        c.reset();
+                        createExplosion(c.x, c.y, 15, c.hue);
                         // push planet
                         const angle = Math.atan2(c.y - p.y, c.x - p.x);
-                        p.x -= Math.cos(angle) * 30;
-                        p.y -= Math.sin(angle) * 30;
+                        p.x -= Math.cos(angle) * 25;
+                        p.y -= Math.sin(angle) * 25;
+                        hit = true;
+                        break;
                     }
-                });
-            });
+                }
+                
+                if (dead || hit) {
+                    comets.splice(i, 1);
+                } else {
+                    c.draw();
+                }
+            }
         }
         
         // --- draw dust particles ---
         if (particlesOn) {
-            dustParticles.forEach(p => {
+            for (const p of dustParticles) {
                 p.update();
                 p.draw();
-            });
+            }
         }
         
         // --- mouse glow ---
         ctx.save();
-        ctx.globalAlpha = 0.03;
-        const mg = ctx.createRadialGradient(mouseX, mouseY, 10, mouseX, mouseY, 150);
-        mg.addColorStop(0, 'rgba(255, 200, 255, 0.3)');
+        ctx.globalAlpha = 0.02;
+        const mg = ctx.createRadialGradient(mouseX, mouseY, 10, mouseX, mouseY, 120);
+        mg.addColorStop(0, 'rgba(255, 200, 255, 0.2)');
         mg.addColorStop(1, 'rgba(255, 200, 255, 0)');
         ctx.fillStyle = mg;
         ctx.beginPath();
-        ctx.arc(mouseX, mouseY, 150, 0, Math.PI*2);
+        ctx.arc(mouseX, mouseY, 120, 0, Math.PI*2);
         ctx.fill();
         ctx.restore();
         
         // --- HUD ---
         ctx.fillStyle = 'rgba(255,255,255,0.02)';
-        ctx.font = '10px monospace';
-        ctx.fillText(`✦ ${planets.length} planets · ${comets.length} comets · ${dustParticles.length} particles ✦`, 20, 30);
-        ctx.fillText(`fps: ${Math.round(60)}`, 20, 45);
+        ctx.font = '9px monospace';
+        ctx.fillText(`✦ ${planets.length} planets · ${comets.length} comets · ${dustParticles.length} particles ✦`, 15, 25);
+        ctx.fillText(`next comet: ${Math.round(cometSpawnTimer/60)}s`, 15, 38);
         
         frameId = requestAnimationFrame(draw);
     }
