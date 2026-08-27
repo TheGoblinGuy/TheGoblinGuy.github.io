@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>abstract · human · shape</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #1a1e2c;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+        .card {
+            background: #232837;
+            padding: 1.8rem 1.8rem 2.2rem;
+            border-radius: 3.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 0 1px rgba(255, 215, 175, 0.08);
+            transition: all 0.2s;
+        }
+        canvas {
+            display: block;
+            margin: 0 auto;
+            width: 480px;
+            height: 480px;
+            border-radius: 2.8rem;
+            box-shadow: inset 0 0 0 1px rgba(255, 220, 180, 0.12), 0 12px 28px rgba(0,0,0,0.7);
+            background: #f9eee7;  /* warm canvas base */
+            cursor: default;
+        }
+        .caption {
+            text-align: center;
+            margin-top: 1.2rem;
+            color: #c9c5d0;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            font-size: 1.1rem;
+            opacity: 0.8;
+            border-top: 1px solid #3b4157;
+            padding-top: 1.2rem;
+        }
+        .caption span {
+            display: inline-block;
+            background: #2f364a;
+            padding: 0.2rem 1.2rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            color: #d6d0dd;
+            letter-spacing: 0.3px;
+        }
+        @media (max-width: 520px) {
+            .card { padding: 1rem; border-radius: 2.5rem; }
+            canvas { width: 100%; height: auto; aspect-ratio: 1/1; border-radius: 2rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="card">
+    <canvas id="humanCanvas" width="600" height="600"></canvas>
+    <div class="caption"><span>◈  shape · colour · code  ◈</span></div>
+</div>
+<script>
+    (function drawHuman() {
+        const canvas = document.getElementById('humanCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+
+        // clear with warm skin-tone base
+        ctx.clearRect(0, 0, 600, 600);
+        
+        // ------  BACKGROUND (soft warm tone)  ------
+        const gradient = ctx.createRadialGradient(300, 300, 60, 300, 300, 380);
+        gradient.addColorStop(0, '#f7e3d4');
+        gradient.addColorStop(0.5, '#efd5c0');
+        gradient.addColorStop(1, '#dbbca8');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, 600, 600);
+
+        // ------  NECK / SHOULDERS (simplified)  ------
+        ctx.save();
+        ctx.shadowColor = 'rgba(40, 30, 20, 0.25)';
+        ctx.shadowBlur = 16;
+        ctx.shadowOffsetY = 4;
+        
+        // trapezius / shoulders (soft geometry)
+        ctx.beginPath();
+        ctx.moveTo(120, 470);
+        ctx.quadraticCurveTo(180, 400, 300, 410);
+        ctx.quadraticCurveTo(420, 400, 480, 470);
+        ctx.fillStyle = '#c8a78c';
+        ctx.shadowBlur = 18;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+        ctx.restore();
+
+        // neck (more defined)
+        ctx.save();
+        ctx.shadowColor = 'rgba(30, 20, 12, 0.25)';
+        ctx.shadowBlur = 12;
+        ctx.shadowOffsetY = 3;
+        ctx.beginPath();
+        ctx.ellipse(300, 400, 72, 44, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#dbb8a2';
+        ctx.fill();
+        ctx.restore();
+
+        // ------  HEAD (main oval)  ------
+        ctx.save();
+        ctx.shadowColor = 'rgba(20, 12, 6, 0.25)';
+        ctx.shadowBlur = 24;
+        ctx.shadowOffsetY = 8;
+        ctx.beginPath();
+        ctx.ellipse(300, 250, 140, 168, 0, 0, Math.PI * 2);
+        ctx.fillStyle = '#efd5c0';
+        ctx.fill();
+        ctx.restore();
+
+        // subtle highlight on head
+        ctx.save();
+        ctx.globalAlpha = 0.2;
+        ctx.beginPath();
+        ctx.ellipse(260, 190, 60, 60, -0.2, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff6ed';
+        ctx.fill();
+        ctx.restore();
+
+        // ------  HAIR (abstract shape – dark, wavy)  ------
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.2)';
+        ctx.shadowBlur = 18;
+        ctx.shadowOffsetY = 6;
+
+        // main hair mass
+        ctx.beginPath();
+        ctx.moveTo(140, 200);
+        ctx.bezierCurveTo(100, 130, 160, 60, 240, 60);
+        ctx.bezierCurveTo(300, 40, 380, 50, 440, 80);
+        ctx.bezierCurveTo(490, 110, 480, 180, 450, 220);
+        ctx.bezierCurveTo(470, 130, 420, 70, 340, 70);
+        ctx.bezierCurveTo(260, 50, 170, 70, 140, 200);
+        ctx.closePath();
+        ctx.fillStyle = '#2d211a';
+        ctx.fill();
+
+        // secondary hair shape (side volume)
+        ctx.beginPath();
+        ctx.moveTo(130, 220);
+        ctx.bezierCurveTo(100, 170, 110, 100, 160, 70);
+        ctx.bezierCurveTo(120, 110, 120, 180, 145, 240);
+        ctx.closePath();
+        ctx.fillStyle = '#34261e';
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(470, 210);
+        ctx.bezierCurveTo(510, 160, 500, 90, 450, 60);
+        ctx.bezierCurveTo(490, 100, 490, 170, 460, 230);
+        ctx.closePath();
+        ctx.fillStyle = '#2f221b';
+        ctx.fill();
+        ctx.restore();
+
+        // ------  EYES (abstract but expressive)  ------
+        // left eye
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.15)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetY = 2;
+        ctx.beginPath();
+        ctx.ellipse(230, 240, 32, 26, -0.05, 0, Math.PI * 2);
+        ctx.fillStyle = '#faf3ec';
+        ctx.fill();
+        ctx.strokeStyle = '#332a22';
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+
+        // iris
+        ctx.beginPath();
+        ctx.ellipse(238, 244, 16, 17, 0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#6d4c3d';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(242, 240, 9, 10, 0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#2f1f14';
+        ctx.fill();
+        // glint
+        ctx.beginPath();
+        ctx.arc(248, 233, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fcf9f5';
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.restore();
+
+        // right eye
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.15)';
+        ctx.shadowBlur = 10;
+        ctx.shadowOffsetY = 2;
+        ctx.beginPath();
+        ctx.ellipse(370, 240, 32, 26, 0.05, 0, Math.PI * 2);
+        ctx.fillStyle = '#faf3ec';
+        ctx.fill();
+        ctx.strokeStyle = '#332a22';
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.ellipse(362, 244, 16, 17, -0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#6d4c3d';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(358, 240, 9, 10, -0.02, 0, Math.PI * 2);
+        ctx.fillStyle = '#2f1f14';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(354, 233, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#fcf9f5';
+        ctx.shadowBlur = 12;
+        ctx.fill();
+        ctx.restore();
+
+        // ------  EYEBROWS (soft arches)  ------
+        ctx.save();
+        ctx.strokeStyle = '#3a2b20';
+        ctx.lineWidth = 7;
+        ctx.lineCap = 'round';
+        ctx.shadowColor = 'rgba(0,0,0,0.08)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.moveTo(190, 206);
+        ctx.quadraticCurveTo(230, 186, 270, 208);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(330, 208);
+        ctx.quadraticCurveTo(370, 186, 410, 206);
+        ctx.stroke();
+        ctx.restore();
+
+        // ------  NOSE (geometric / abstract)  ------
+        ctx.save();
+        ctx.shadowColor = 'rgba(30, 18, 10, 0.15)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 2;
+        ctx.beginPath();
+        ctx.moveTo(300, 260);
+        ctx.quadraticCurveTo(285, 300, 270, 320);
+        ctx.quadraticCurveTo(295, 328, 300, 330);
+        ctx.quadraticCurveTo(305, 328, 330, 320);
+        ctx.quadraticCurveTo(315, 300, 300, 260);
+        ctx.fillStyle = '#dbb8a2';
+        ctx.fill();
+        ctx.strokeStyle = '#b2907a';
+        ctx.lineWidth = 1.6;
+        ctx.stroke();
+
+        // subtle nose highlight
+        ctx.beginPath();
+        ctx.moveTo(293, 280);
+        ctx.quadraticCurveTo(290, 300, 285, 310);
+        ctx.strokeStyle = '#edcdbc';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.restore();
+
+        // ------  MOUTH (simple, warm)  ------
+        ctx.save();
+        ctx.shadowColor = 'rgba(40, 20, 10, 0.2)';
+        ctx.shadowBlur = 12;
+        ctx.shadowOffsetY = 4;
+        ctx.beginPath();
+        ctx.moveTo(245, 370);
+        ctx.quadraticCurveTo(300, 400, 355, 370);
+        ctx.quadraticCurveTo(300, 410, 245, 370);
+        ctx.fillStyle = '#b5614a';
+        ctx.fill();
+        ctx.strokeStyle = '#8f4433';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // lower lip hint
+        ctx.beginPath();
+        ctx.moveTo(260, 380);
+        ctx.quadraticCurveTo(300, 408, 340, 380);
+        ctx.strokeStyle = '#a5533e';
+        ctx.lineWidth = 2.2;
+        ctx.stroke();
+        ctx.restore();
+
+        // ------  EARS (minimal, stylised)  ------
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.1)';
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetY = 3;
+        ctx.beginPath();
+        ctx.ellipse(148, 260, 24, 40, -0.1, 0, Math.PI * 2);
+        ctx.fillStyle = '#e6cbb8';
+        ctx.fill();
+        ctx.strokeStyle = '#b69580';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.ellipse(452, 260, 24, 40, 0.1, 0, Math.PI * 2);
+        ctx.fillStyle = '#e6cbb8';
+        ctx.fill();
+        ctx.strokeStyle = '#b69580';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.restore();
+
+        // ------  FINAL TOUCH: soft blush / colour accent  ------
+        ctx.save();
+        ctx.globalAlpha = 0.18;
+        ctx.shadowBlur = 38;
+        ctx.shadowColor = '#d66b4b';
+        ctx.beginPath();
+        ctx.ellipse(200, 310, 45, 30, 0.1, 0, Math.PI * 2);
+        ctx.fillStyle = '#c9654a';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(400, 310, 45, 30, -0.1, 0, Math.PI * 2);
+        ctx.fillStyle = '#c9654a';
+        ctx.fill();
+        ctx.restore();
+
+        // ------  LIGHT CATCH (spark of life)  ------
+        ctx.save();
+        ctx.globalAlpha = 0.3;
+        ctx.shadowBlur = 40;
+        ctx.shadowColor = '#fff3e0';
+        ctx.beginPath();
+        ctx.arc(300, 140, 18, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff2e6';
+        ctx.fill();
+        ctx.restore();
+
+        // subtle edge vignette (depth)
+        const vignette = ctx.createRadialGradient(300, 300, 240, 300, 300, 420);
+        vignette.addColorStop(0, 'rgba(0,0,0,0)');
+        vignette.addColorStop(1, 'rgba(30, 20, 16, 0.15)');
+        ctx.fillStyle = vignette;
+        ctx.fillRect(0, 0, 600, 600);
+
+        // small signature – "abstract human"
+        ctx.fillStyle = '#4a3f38';
+        ctx.globalAlpha = 0.3;
+        ctx.font = '11px "Segoe UI", monospace';
+        ctx.fillText('◈  code · shape · human  ◈', 420, 580);
+        ctx.globalAlpha = 1.0;
+    })();
+</script>
+</body>
+</html>
