@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goblin Tech RPG Color Swatches</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1e;
+            padding: 2rem;
+            color: #e0d6c8;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: bold;
+            color: #f0d5b0;
+            text-shadow: 0 0 10px #b47b3a40;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1rem;
+            color: #8a7a6a;
+            margin-bottom: 2.5rem;
+            font-style: italic;
+        }
+
+        .scheme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .scheme-card {
+            background: #26222a;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #3a3340;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            transition: transform 0.2s ease, border-color 0.3s ease;
+        }
+
+        .scheme-card:hover {
+            transform: translateY(-6px);
+            border-color: #b47b3a;
+        }
+
+        .scheme-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid #3a3340;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .scheme-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #f0d5b0;
+        }
+
+        .scheme-class {
+            font-size: 0.7rem;
+            background: #3a3340;
+            padding: 2px 10px;
+            border-radius: 20px;
+            color: #b0a090;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .swatch-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .swatch {
+            flex: 1;
+            min-width: 50px;
+            height: 70px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            font-weight: 500;
+            color: #fff;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+            padding: 4px;
+            text-align: center;
+            line-height: 1.3;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .swatch-light {
+            color: #1e1e2a;
+            text-shadow: none;
+        }
+
+        .swatch-hex {
+            font-size: 0.5rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .swatch-label {
+            font-size: 0.5rem;
+            opacity: 0.6;
+            font-weight: 400;
+        }
+
+        .vibe {
+            font-size: 0.8rem;
+            color: #a09080;
+            margin-top: 6px;
+            font-style: italic;
+            border-top: 1px solid #2a2630;
+            padding-top: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #6a5a4a;
+            font-size: 0.85rem;
+            border-top: 1px solid #2a2630;
+            padding-top: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .scheme-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚔️ GOBLIN TECH · COLOR TOMES</h1>
+    <p class="subtitle">10 palettes for the chaos-aligned, code-wielding, RPG-loving goblin</p>
+
+    <div class="scheme-grid">
+
+        <!-- ============================================================ -->
+        <!-- 1. GOBLIN CORE (Earthy & Playful) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🧌 Goblin Core</span>
+                <span class="scheme-class">Rogue</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#4a7c59;">Primary<br><span class="swatch-hex">#4a7c59</span></div>
+                <div class="swatch" style="background:#8b5e3c;">Secondary<br><span class="swatch-hex">#8b5e3c</span></div>
+                <div class="swatch" style="background:#c87a3a;">Accent<br><span class="swatch-hex">#c87a3a</span></div>
+                <div class="swatch" style="background:#f5ede4; color:#1e1e2a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f5ede4</span></div>
+                <div class="swatch" style="background:#2c2b26;">Text<br><span class="swatch-hex">#2c2b26</span></div>
+            </div>
+            <div class="vibe">🌲 Warm · Organic · Mischievous — feels like a goblin's workshop.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 2. ALCHEMY (Potions & Magic) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🧪 Alchemy</span>
+                <span class="scheme-class">Wizard</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#6b4c9a;">Primary<br><span class="swatch-hex">#6b4c9a</span></div>
+                <div class="swatch" style="background:#2e8b57;">Secondary<br><span class="swatch-hex">#2e8b57</span></div>
+                <div class="swatch" style="background:#d4a373;">Accent<br><span class="swatch-hex">#d4a373</span></div>
+                <div class="swatch" style="background:#f9f3e8; color:#1e1e2a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f9f3e8</span></div>
+                <div class="swatch" style="background:#2d2a24;">Text<br><span class="swatch-hex">#2d2a24</span></div>
+            </div>
+            <div class="vibe">⚗️ Mystical · Potion-brewing · Arcane — for the tech-wizard goblin.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 3. DUNGEON (Dark & Moody) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🏚️ Dungeon</span>
+                <span class="scheme-class">Fighter</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#8b3a3a;">Primary<br><span class="swatch-hex">#8b3a3a</span></div>
+                <div class="swatch" style="background:#5c4a3a;">Secondary<br><span class="swatch-hex">#5c4a3a</span></div>
+                <div class="swatch" style="background:#b08d5a;">Accent<br><span class="swatch-hex">#b08d5a</span></div>
+                <div class="swatch" style="background:#1e1a1a;">Bg<br><span class="swatch-hex">#1e1a1a</span></div>
+                <div class="swatch" style="background:#d4c8b8; color:#1e1e2a; border:1px solid #555;">Text<br><span class="swatch-hex">#d4c8b8</span></div>
+            </div>
+            <div class="vibe">🩸 Gritty · Dangerous · Old-school RPG — for the dungeon-crawling goblin.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 4. CHAOS (Neon + Magic) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🌀 Chaos</span>
+                <span class="scheme-class">Sorcerer</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#b83a6b;">Primary<br><span class="swatch-hex">#b83a6b</span></div>
+                <div class="swatch" style="background:#d95d8a;">Secondary<br><span class="swatch-hex">#d95d8a</span></div>
+                <div class="swatch" style="background:#f0a500;">Accent<br><span class="swatch-hex">#f0a500</span></div>
+                <div class="swatch" style="background:#0d0d12;">Bg<br><span class="swatch-hex">#0d0d12</span></div>
+                <div class="swatch" style="background:#e8dcc8; color:#1e1e2a; border:1px solid #555;">Text<br><span class="swatch-hex">#e8dcc8</span></div>
+            </div>
+            <div class="vibe">🌈 Wild · Unpredictable · Chaotic magic — for the goblin who loves mayhem.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 5. IRON & FIRE (Forge/Tech) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">⚙️ Iron &amp; Fire</span>
+                <span class="scheme-class">Artificer</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#c96f3a;">Primary<br><span class="swatch-hex">#c96f3a</span></div>
+                <div class="swatch" style="background:#6a4c3a;">Secondary<br><span class="swatch-hex">#6a4c3a</span></div>
+                <div class="swatch" style="background:#d4a06a;">Accent<br><span class="swatch-hex">#d4a06a</span></div>
+                <div class="swatch" style="background:#12100e;">Bg<br><span class="swatch-hex">#12100e</span></div>
+                <div class="swatch" style="background:#d4c8b8; color:#1e1e2a; border:1px solid #555;">Text<br><span class="swatch-hex">#d4c8b8</span></div>
+            </div>
+            <div class="vibe">🔥 Industrial · Forged · Gritty tech — for the goblin engineer.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 6. FEYWILD (Ethereal & Bright) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🌿 Feywild</span>
+                <span class="scheme-class">Druid</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#3a8c6b;">Primary<br><span class="swatch-hex">#3a8c6b</span></div>
+                <div class="swatch" style="background:#5aa87a;">Secondary<br><span class="swatch-hex">#5aa87a</span></div>
+                <div class="swatch" style="background:#d9b87a;">Accent<br><span class="swatch-hex">#d9b87a</span></div>
+                <div class="swatch" style="background:#f4f0e8; color:#1e1e2a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#f4f0e8</span></div>
+                <div class="swatch" style="background:#1e2a22;">Text<br><span class="swatch-hex">#1e2a22</span></div>
+            </div>
+            <div class="vibe">🌱 Magical · Natural · Enchanted — for the forest goblin.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 7. TERMINAL (Retro Green Screen) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🖥️ Terminal</span>
+                <span class="scheme-class">Rogue</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#33ff66;">Primary<br><span class="swatch-hex">#33ff66</span></div>
+                <div class="swatch" style="background:#1a6633;">Secondary<br><span class="swatch-hex">#1a6633</span></div>
+                <div class="swatch" style="background:#ccff99;">Accent<br><span class="swatch-hex">#ccff99</span></div>
+                <div class="swatch" style="background:#0a0a0a;">Bg<br><span class="swatch-hex">#0a0a0a</span></div>
+                <div class="swatch" style="background:#b3ff99; color:#1e1e2a; border:1px solid #555;">Text<br><span class="swatch-hex">#b3ff99</span></div>
+            </div>
+            <div class="vibe">💚 Retro · Hacker · Glitchy — for the goblin who lives in the code.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 8. DRAGON (Rich & Regal) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🐉 Dragon</span>
+                <span class="scheme-class">Warlock</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#8a2a3a;">Primary<br><span class="swatch-hex">#8a2a3a</span></div>
+                <div class="swatch" style="background:#d4a06a;">Secondary<br><span class="swatch-hex">#d4a06a</span></div>
+                <div class="swatch" style="background:#f0c080;">Accent<br><span class="swatch-hex">#f0c080</span></div>
+                <div class="swatch" style="background:#1a1410;">Bg<br><span class="swatch-hex">#1a1410</span></div>
+                <div class="swatch" style="background:#e8dcc8; color:#1e1e2a; border:1px solid #555;">Text<br><span class="swatch-hex">#e8dcc8</span></div>
+            </div>
+            <div class="vibe">👑 Powerful · Regal · Ancient — for the goblin who wants to rule.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 9. CRYPT (Undead & Mysterious) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">💀 Crypt</span>
+                <span class="scheme-class">Necromancer</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#3a4a5a;">Primary<br><span class="swatch-hex">#3a4a5a</span></div>
+                <div class="swatch" style="background:#5a6a7a;">Secondary<br><span class="swatch-hex">#5a6a7a</span></div>
+                <div class="swatch" style="background:#7a8a8a;">Accent<br><span class="swatch-hex">#7a8a8a</span></div>
+                <div class="swatch" style="background:#12101a;">Bg<br><span class="swatch-hex">#12101a</span></div>
+                <div class="swatch" style="background:#c8c0b8; color:#1e1e2a; border:1px solid #555;">Text<br><span class="swatch-hex">#c8c0b8</span></div>
+            </div>
+            <div class="vibe">🕯️ Eerie · Undead · Atmospheric — for the goblin who walks the dark path.</div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- 10. HONEY & GOLD (Warm & Friendly) -->
+        <!-- ============================================================ -->
+        <div class="scheme-card">
+            <div class="scheme-header">
+                <span class="scheme-name">🍯 Honey &amp; Gold</span>
+                <span class="scheme-class">Bard</span>
+            </div>
+            <div class="swatch-row">
+                <div class="swatch" style="background:#d4a040;">Primary<br><span class="swatch-hex">#d4a040</span></div>
+                <div class="swatch" style="background:#f0c060;">Secondary<br><span class="swatch-hex">#f0c060</span></div>
+                <div class="swatch" style="background:#e8b84a;">Accent<br><span class="swatch-hex">#e8b84a</span></div>
+                <div class="swatch" style="background:#fcf8f0; color:#1e1e2a; border:1px solid #ccc;">Bg<br><span class="swatch-hex">#fcf8f0</span></div>
+                <div class="swatch" style="background:#2a2418;">Text<br><span class="swatch-hex">#2a2418</span></div>
+            </div>
+            <div class="vibe">🍯 Warm · Inviting · Friendly — for the goblin bard who tells tales.</div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        🧌 FART Goblin Tech — choose your color tome, then update your <code>:root</code> in <code>style.css</code>
+    </div>
+
+</body>
+</html>
