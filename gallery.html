@@ -31,7 +31,7 @@
 
             <!-- Example 1 -->
             <div class="gallery-item">
-                <img src="assets/images/2022.1.30RGDV2jpg - Copy.jpg" alt="Digital Character Study">
+                <img src="assets/images/2022.1.30RGDV2jpg - Copy.jpg" alt="Digital Character Study" onclick="openLightbox(this)">
                 <div class="gallery-caption">
                     <h3>Quick Character Study</h3>
                     <p>30 minute Digital sketch</p>
@@ -40,7 +40,7 @@
 
             <!-- Example 2 -->
             <div class="gallery-item">
-                <img src="assets/images/environment-concept.jpg" alt="Environment Concept Art">
+                <img src="assets/images/environment-concept.jpg" alt="Environment Concept Art" onclick="openLightbox(this)">
                 <div class="gallery-caption">
                     <h3>Forest Environment</h3>
                     <p>Concept art for a game level</p>
@@ -49,7 +49,7 @@
 
             <!-- Example 3 -->
             <div class="gallery-item">
-                <img src="assets/images/prop-asset.jpg" alt="Game Prop Asset">
+                <img src="assets/images/prop-asset.jpg" alt="Game Prop Asset" onclick="openLightbox(this)">
                 <div class="gallery-caption">
                     <h3>Alchemy Table</h3>
                     <p>Game-ready prop asset</p>
@@ -69,9 +69,50 @@
     <footer>
         <p>&copy; <span id="year"></span> F.A.R.T. Goblin Tech Ltd. All rights reserved. No goblins were harmed.</p>
     </footer>
-
-    <script>
+    
+     <script>
+        // Dynamic copyright year
         document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Lightbox functions
+        function openLightbox(imgElement) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const caption = document.getElementById('lightbox-caption');
+
+            // Set the image source
+            lightboxImg.src = imgElement.src;
+
+            // Try to get the caption from the parent gallery-item
+            const parentItem = imgElement.closest('.gallery-item');
+            const captionText = parentItem ? parentItem.querySelector('.gallery-caption h3') : null;
+            const captionDesc = parentItem ? parentItem.querySelector('.gallery-caption p') : null;
+
+            if (captionText) {
+                caption.innerHTML = `<strong>${captionText.textContent}</strong>`;
+                if (captionDesc) {
+                    caption.innerHTML += `<br><span style="font-weight: normal; opacity: 0.8;">${captionDesc.textContent}</span>`;
+                }
+            } else {
+                caption.textContent = '';
+            }
+
+            // Show the lightbox
+            lightbox.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').style.display = 'none';
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Close lightbox with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeLightbox();
+            }
+        });
     </script>
 
 </body>
