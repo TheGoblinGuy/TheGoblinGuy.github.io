@@ -542,3 +542,73 @@ footer {
     border-top: 1px solid var(--color-border);
     padding-top: 30px;
 }
+/* ======================================== */
+/* GALLERY PAGE STYLES                     */
+/* ======================================== */
+
+.gallery-intro {
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto 40px auto;
+    text-align: center;
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.gallery-item {
+    background: var(--color-card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.gallery-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.gallery-caption {
+    padding: 16px 20px;
+}
+
+.gallery-caption h3 {
+    margin: 0 0 4px 0;
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.gallery-caption p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+.gallery-note {
+    text-align: center;
+    font-size: 0.95rem;
+    opacity: 0.7;
+}
+
+.gallery-note a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.gallery-note a:hover {
+    color: var(--color-secondary);
+    text-decoration: underline;
+}
