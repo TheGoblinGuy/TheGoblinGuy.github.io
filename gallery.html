@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gallery - Fart Goblin Tech</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">💨 Fart Goblin Tech</a>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="gallery.html" class="active">Gallery</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="page-container">
+
+        <h1>🖼️ Art Gallery</h1>
+        <p class="gallery-intro">
+            A selection of my 3D models, game assets, and visual experiments.
+        </p>
+
+        <div class="gallery-grid">
+
+            <!-- Example 1 -->
+            <div class="gallery-item">
+                <img src="assets/images/character-model.jpg" alt="3D Character Model">
+                <div class="gallery-caption">
+                    <h3>Goblin Character</h3>
+                    <p>3D model created in Blender</p>
+                </div>
+            </div>
+
+            <!-- Example 2 -->
+            <div class="gallery-item">
+                <img src="assets/images/environment-concept.jpg" alt="Environment Concept Art">
+                <div class="gallery-caption">
+                    <h3>Forest Environment</h3>
+                    <p>Concept art for a game level</p>
+                </div>
+            </div>
+
+            <!-- Example 3 -->
+            <div class="gallery-item">
+                <img src="assets/images/prop-asset.jpg" alt="Game Prop Asset">
+                <div class="gallery-caption">
+                    <h3>Alchemy Table</h3>
+                    <p>Game-ready prop asset</p>
+                </div>
+            </div>
+
+            <!-- Add more gallery-item blocks as needed -->
+
+        </div>
+
+        <p class="gallery-note">
+            🖌️ More work coming soon. Follow me on <a href="https://thegoblinguy.itch.io/" target="_blank">Itch.io</a> or <a href="https://github.com/TheGoblinGuy" target="_blank">GitHub</a> for updates.
+        </p>
+
+    </main>
+
+    <footer>
+        <p>&copy; <span id="year"></span> F.A.R.T. Goblin Tech Ltd. All rights reserved. No goblins were harmed.</p>
+    </footer>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+
+</body>
+</html>
