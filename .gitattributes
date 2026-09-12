@@ -1,2 +1,2 @@
-*.wasm binary
-*.pck binary
+*.wasm filter=lfs diff=lfs merge=lfs -text
+*.pck filter=lfs diff=lfs merge=lfs -text
