@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ydh5wv1f00bx"
-path="res://.godot/imported/index.png-8396a663d26e967b6d57a1b32e09c75d.ctex"
+uid="uid://dp5atfnktdnvi"
+path="res://.godot/imported/index.png-0dd5d1602a8a8b4605aa2bde3ed6abe2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://hangmanv1.2/index.png"
-dest_files=["res://.godot/imported/index.png-8396a663d26e967b6d57a1b32e09c75d.ctex"]
+source_file="res://hangman v1.3/index.png"
+dest_files=["res://.godot/imported/index.png-0dd5d1602a8a8b4605aa2bde3ed6abe2.ctex"]
 
 [params]
 
