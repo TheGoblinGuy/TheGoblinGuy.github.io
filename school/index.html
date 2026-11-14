@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D School Model</title>
+  <script type="module" src="https://s4.zstatic.net/npm/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      display: block;
+    }
+    #error {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #c00;
+      font-family: sans-serif;
+      font-size: 16px;
+      text-align: center;
+      padding: 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <model-viewer
+    src="LiGe5.glb"
+    alt="3D School Model"
+    auto-rotate
+    camera-controls
+    shadow-intensity="1"
+    exposure="1"
+    poster-color="#f0f0f0">
+  </model-viewer>
+
+  <div id="error">
+    Failed to load the 3D model.<br>
+    Check that <code>LiGe5.glb</code> is in the same folder as this file.
+  </div>
+
+  <script>
+    // Show an error message if the model fails to load
+    const viewer = document.querySelector('model-viewer');
+    const errorDiv = document.getElementById('error');
+
+    viewer.addEventListener('error', () => {
+      errorDiv.style.display = 'block';
+    });
+
+    // If the model-viewer script itself fails to load (CDN blocked),
+    // fall back to showing the error after a short delay
+    setTimeout(() => {
+      if (!customElements.get('model-viewer')) {
+        errorDiv.innerHTML = 'Failed to load the model-viewer script.<br>The CDN may be blocked in your network.';
+        errorDiv.style.display = 'block';
+      }
+    }, 5000);
+  </script>
+
+</body>
+</html>
